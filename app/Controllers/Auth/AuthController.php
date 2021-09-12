@@ -6,12 +6,6 @@ use App\Models\User;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 
-/**
- * AuthController
- *
- * @author    Haven Shen <havenshen@gmail.com>
- * @copyright    Copyright (c) Haven Shen
- */
 class AuthController extends Controller
 {
 	public function getSignOut($request, $response)
@@ -48,29 +42,19 @@ class AuthController extends Controller
 
 	public function postSignUp($request, $response)
 	{
-
-		$validation = $this->validator->validate($request, [
-			'email' => v::noWhitespace()->notEmpty()->email()->emailAvailable(),
-			'name' => v::noWhitespace()->notEmpty()->alpha(),
-			'password' => v::noWhitespace()->notEmpty(),
-		]);
-
-		if ($validation->failed()) {
-			return $response->withHeader('Location', $this->router->urlFor('auth.signup'));
-		}
-
 		$data = $request->getParsedBody();
 
 		$user = User::create([
 			'email' => $data['email'],
-			'name' => $data['name'],
+			'first_name' => $data['first_name'],
+			'last_name' => $data['last_name'],
 			'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'phone' => $data['phone'],
+            'photo_url' => $data['photo_url'],
+            'username' => $data['username'],
 		]);
 
-		$this->flash->addMessage('info', 'You have been signed up');
-
-		$this->auth->attempt($user->email, $data['password']);
-
-		return $response->withHeader('Location', $this->router->urlFor('home'));
+        $response->getBody()->write(json_encode($user));
+        return $response;
 	}
 }

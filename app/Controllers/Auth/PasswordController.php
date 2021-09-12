@@ -6,12 +6,6 @@ use App\Models\User;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 
-/**
- * PasswordController
- *
- * @author    Haven Shen <havenshen@gmail.com>
- * @copyright    Copyright (c) Haven Shen
- */
 class PasswordController extends Controller
 {
 	public function getChangePassword($request, $response)

@@ -2,7 +2,6 @@
 
 use DI\Container;
 use Respect\Validation\Validator as v;
-use Slim\Csrf\Guard;
 use Slim\Factory\AppFactory;
 use Slim\Handlers\Strategies\RequestResponseArgs;
 use Slim\Psr7\Factory\UriFactory;
@@ -28,7 +27,7 @@ $app = AppFactory::create();
 $responseFactory = $app->getResponseFactory();
 
 $routeCollector = $app->getRouteCollector();
-$routeCollector->setDefaultInvocationStrategy(new RequestResponseArgs());
+//$routeCollector->setDefaultInvocationStrategy(new RequestResponseArgs());
 $routeParser = $app->getRouteCollector()->getRouteParser();
 
 $container->set('settings', function () {
@@ -90,15 +89,12 @@ $container->set('validator', function ($container) {
 	return new App\Validation\Validator;
 });
 
-$container->set('csrf', function($container) use ($responseFactory) {
-	return new Guard($responseFactory);
-});
+
 
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
-$app->add(new \App\Middleware\OldInputMiddleware($container));
-$app->add(new \App\Middleware\CsrfViewMiddleware($container));
+$app->addBodyParsingMiddleware();
 
-$app->add('csrf');
+//$app->add(new \App\Middleware\OldInputMiddleware($container));
 
 v::with('App\\Validation\\Rules\\');
 

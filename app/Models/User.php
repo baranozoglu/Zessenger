@@ -4,12 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * User
- *
- * @author    Haven Shen <havenshen@gmail.com>
- * @copyright    Copyright (c) Haven Shen
- */
 class User extends Model
 {
 	protected $table = 'users';
@@ -20,10 +14,25 @@ class User extends Model
 
 	public $email;
 
+	public $phone;
+	
+	public $username;
+	
+	public $password;
+	
+	public $photo_url;
+
+    public $timestamps = false;
+
 	protected $fillable = [
+		'first_name',
+		'last_name',
 		'email',
-		'name',
+		'phone',
+		'username',
 		'password',
+		'username',
+		'photo_url',
 	];
 
 	public function setPassword($password)
@@ -61,6 +70,36 @@ class User extends Model
 	public function getEmail()
 	{
 		return $this->email;
+	}
+
+	public function setUsername($username)
+	{
+		$this->username = $username;
+	}
+
+	public function getUsername()
+	{
+		return $this->username;
+	}
+
+	public function setPhone($phone)
+	{
+		$this->phone = $phone;
+	}
+
+	public function getPhone()
+	{
+		return $this->phone;
+	}
+
+	public function setPhotoUrl($photo_url)
+	{
+		$this->photo_url = $photo_url;
+	}
+
+	public function getPhotoUrl()
+	{
+		return $this->photo_url;
 	}
 
 	public function getFullName()

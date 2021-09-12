@@ -4,12 +4,6 @@ namespace App\Auth;
 
 use App\Models\User;
 
-/**
- * Auth
- *
- * @author    Haven Shen <havenshen@gmail.com>
- * @copyright    Copyright (c) Haven Shen
- */
 class Auth
 {
 	public function user()
