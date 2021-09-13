@@ -4,7 +4,9 @@
 namespace App\Controllers;
 
 
+use App\Models\BlockedUser;
 use App\Models\Message;
+use App\Models\User;
 
 class MessageController extends Controller
 {
@@ -19,6 +21,16 @@ class MessageController extends Controller
     public function addMessage($request, $response)
     {
         $data = $request->getParsedBody();
+
+        $receiver_user = User::whereRaw('sender_id = ? ', [$data['sender_id']])->get();
+        if($receiver_user == null ) {
+            $this->flash->addMessage('error', 'Could not find user which you want to send message!');
+        }
+
+        $is_user_blockedBy_receiver_user = BlockedUser::whereRaw('user_id = ? and blocked_user_id = ? ', [$data['receiver_id'], $data['sender_id']])->get();
+        if($is_user_blockedBy_receiver_user != null) {
+            $this->flash->addMessage('error', 'You have blocked by user which you want to send message!');
+        }
 
         $user = Message::create([
             'text' => $data['text'],
