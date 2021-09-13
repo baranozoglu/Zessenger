@@ -1,9 +1,8 @@
 <?php
-
-
 namespace App\Controllers;
 
 use App\Models\Login;
+use Exception;
 
 class LoginController extends Controller
 {
@@ -16,7 +15,7 @@ class LoginController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
     }
 
@@ -33,7 +32,7 @@ class LoginController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
     }
 }

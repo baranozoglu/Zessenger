@@ -1,10 +1,9 @@
 <?php
-
-
 namespace App\Controllers;
 
-
 use App\Models\FavoriteMessage;
+use Exception;
+use http\Message;
 
 class FavoriteMessageController extends Controller
 {
@@ -12,12 +11,14 @@ class FavoriteMessageController extends Controller
     {
         try {
             $data = $request->getQueryParams();
-            $favorite_messages = FavoriteMessage::whereRaw('sender_id = ? and receiver_id = ? ', [$data['sender_id'], $data['receiver_id']])->get();
+            $favorite_messages = FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
+                ->whereRaw('user_id = ? order by created_at', [$data['user_id']])
+                ->get(['favorite_messages.*','users.username']);
             $response->getBody()->write(json_encode($favorite_messages));
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
     }
 
@@ -25,18 +26,32 @@ class FavoriteMessageController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-
-            $favorite_message = FavoriteMessage::create([
-                'message_id' => $data['message_id'],
-                'sender_id' => $data['sender_id'],
-                'receiver_id' => $data['receiver_id'],
-            ]);
+            $this->validate($data);
+            $favorite_message = $this->save($data);
 
             $response->getBody()->write(json_encode($favorite_message));
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
+    }
+
+    private function validate($data) {
+        $message = Message::whereRaw('id = ? ', [$data['message_id']])->get();
+        if(count($message) == 0) {
+            throw new Exception('Could not find message which you want to add as favorite!',404);
+        }
+    }
+
+    private function save($data) {
+        return FavoriteMessage::updateOrCreate(['id' => $data['id'],],
+            [
+            'message_id' => $data['message_id'],
+            'user_id' => $data['user_id'],
+            'sender_id' => $data['sender_id'],
+            'receiver_id' => $data['receiver_id'],
+            ]
+        );
     }
 }

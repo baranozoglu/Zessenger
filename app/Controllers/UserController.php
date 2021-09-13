@@ -1,9 +1,8 @@
 <?php
-
-
 namespace App\Controllers;
 
 use App\Models\User;
+use Exception;
 
 class UserController extends Controller
 {
@@ -15,7 +14,7 @@ class UserController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
     }
 }

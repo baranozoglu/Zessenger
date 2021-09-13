@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class FavoriteUserCategory extends Model
 {
-	protected $table = 'favorite_user_caregories';
-
-    private $name;
+	protected $table = 'favorite_user_categories';
 
     private $user_id;
 
+    private $name;
+
 	protected $fillable = [
-		'name',
 		'user_id',
+		'name',
 	];
 
     /**

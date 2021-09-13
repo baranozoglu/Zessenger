@@ -1,10 +1,8 @@
 <?php
-
-
 namespace App\Controllers;
 
-
 use App\Models\BlockedUser;
+use Exception;
 
 class BlockedUserController extends Controller
 {
@@ -17,7 +15,7 @@ class BlockedUserController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
     }
 
@@ -25,17 +23,29 @@ class BlockedUserController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-
-            $blocked_user = BlockedUser::create([
-                'user_id' => $data['user_id'],
-                'blocked_user_id' => $data['blocked_user_id'],
-            ]);
-
+            $this->validate($data);
+            $blocked_user = $this->save($data);
             $response->getBody()->write(json_encode($blocked_user));
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
+    }
+
+    private function validate($data) {
+        $user = $this->getBlockedUserByUserId($data['blocked_user_id']);
+        if(count($user) == 0) {
+            throw new Exception('Could not find user which you want to block!',404);
+        }
+    }
+
+    private function save($data) {
+        return BlockedUser::updateOrCreate(['id' => $data['id'],],
+            [
+            'user_id' => $data['user_id'],
+            'blocked_user_id' => $data['blocked_user_id'],
+            ]
+        );
     }
 }

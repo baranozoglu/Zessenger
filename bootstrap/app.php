@@ -3,11 +3,6 @@
 use DI\Container;
 use Respect\Validation\Validator as v;
 use Slim\Factory\AppFactory;
-use Slim\Handlers\Strategies\RequestResponseArgs;
-use Slim\Psr7\Factory\UriFactory;
-use Slim\Views\Twig;
-use Slim\Views\TwigExtension;
-use Slim\Views\TwigRuntimeLoader;
 
 session_start();
 
@@ -53,48 +48,11 @@ $container->set('auth', function() {
 	return new \App\Auth\Auth;
 });
 
-$container->set('flash', function() {
-	return new \Slim\Flash\Messages;
-});
-
-$container->set('view', function ($container) use ($app) {
-	$view = Twig::create(__DIR__ . '/../resources/views', [
-		'cache' => false,
-	]);
-
-	$runtimeLoader = new TwigRuntimeLoader(
-        $app->getRouteCollector()->getRouteParser(),
-        (new UriFactory)->createFromGlobals($_SERVER),
-        '/'
-    );
-
-    $view->addRuntimeLoader($runtimeLoader);
-
-	$view->addExtension(new TwigExtension(
-		$app->getRouteCollector()->getRouteParser(),
-        $app->getBasePath()
-	));
-
-	$view->getEnvironment()->addGlobal('auth', [
-		'check' => $container->get('auth')->check(),
-		'user' => $container->get('auth')->user()
-	]);
-
-	$view->getEnvironment()->addGlobal('flash', $container->get('flash'));
-
-	return $view;
-});
-
 $container->set('validator', function ($container) {
 	return new App\Validation\Validator;
 });
 
-
-
-$app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->addBodyParsingMiddleware();
-
-//$app->add(new \App\Middleware\OldInputMiddleware($container));
 
 v::with('App\\Validation\\Rules\\');
 

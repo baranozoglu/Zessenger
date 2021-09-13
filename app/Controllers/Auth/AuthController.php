@@ -1,22 +1,21 @@
 <?php
-
 namespace App\Controllers\Auth;
 
+use App\Models\Login;
 use App\Models\User;
 use App\Controllers\Controller;
-use Respect\Validation\Validator as v;
 
 class AuthController extends Controller
 {
 	public function getSignOut($request, $response)
 	{
 		$this->auth->logout();
-		return $response->withHeader('Location', $this->router->urlFor('home'));
+		return null;
 	}
 
 	public function getSignIn($request, $response)
 	{
-		return $this->view->render($response, 'auth/signin.twig');
+		return null;
 	}
 
 	public function postSignIn($request, $response)
@@ -32,12 +31,16 @@ class AuthController extends Controller
 			return $response->withHeader('Location', $this->router->urlFor('auth.signin'));
 		}
 
-		return $response->withHeader('Location', $this->router->urlFor('home'));
+        Login::create([
+            'user_id' => $data['user_id'],
+        ]);
+
+		return null;
 	}
 
 	public function getSignUp($request, $response)
 	{
-		return $this->view->render($response, 'auth/signup.twig');
+		return null;
 	}
 
 	public function postSignUp($request, $response)

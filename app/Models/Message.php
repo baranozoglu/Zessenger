@@ -15,6 +15,7 @@ class Message extends Model
     private $sender_id;
     private $receiver_id;
     private $isEdited;
+    private $parent_message_id;
 
     protected $fillable = [
         'text',
@@ -23,6 +24,7 @@ class Message extends Model
         'sender_id',
         'receiver_id',
         'isEdited',
+        'parent_message_id',
     ];
 
     /**
@@ -103,6 +105,38 @@ class Message extends Model
     public function setReceiverId($receiver_id): void
     {
         $this->receiver_id = $receiver_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsEdited()
+    {
+        return $this->isEdited;
+    }
+
+    /**
+     * @param mixed $isEdited
+     */
+    public function setIsEdited($isEdited): void
+    {
+        $this->isEdited = $isEdited;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParentMessageId()
+    {
+        return $this->parent_message_id;
+    }
+
+    /**
+     * @param mixed $parent_message_id
+     */
+    public function setParentMessageId($parent_message_id): void
+    {
+        $this->parent_message_id = $parent_message_id;
     }
 
 

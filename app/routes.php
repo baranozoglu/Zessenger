@@ -26,6 +26,7 @@ $app->group('', function ($group) {
 $app->group('', function ($group) {
     $group->get('/getMessages', MessageController::class . ':getMessagesBySenderAndReceiver')->setName('getMessages');
     $group->post('/sendMessage', MessageController::class . ':addMessage')->setName('sendMessages');
+    $group->put('/updateMessage', MessageController::class . ':addMessage')->setName('addMessage');
 });
 
 $app->group('', function ($group) {
@@ -36,16 +37,17 @@ $app->group('', function ($group) {
 $app->group('', function ($group) {
     $group->get('/getFavoriteMessagesBySenderAndReceiver', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver')->setName('getFavoriteMessagesBySenderAndReceiver');
     $group->post('/addFavoriteMessage', FavoriteMessageController::class . ':addFavoriteMessage')->setName('addFavoriteMessage');
+    $group->delete('/deleteFavoriteMessage', FavoriteMessageController::class . ':deleteFavoriteMessage')->setName('deleteFavoriteMessage');
 });
 
 $app->group('', function ($group) {
     $group->get('/getFavoriteUserCategoriesByUserId', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId')->setName('getFavoriteUserCategoriesByUserId');
     $group->post('/addFavoriteUserCategory', FavoriteUserCategoryController::class . ':addFavoriteUserCategory')->setName('addFavoriteUserCategory');
+    $group->delete('/deleteFavoriteUserCategory', FavoriteUserCategoryController::class . ':deleteFavoriteUserCategory')->setName('deleteFavoriteUserCategory');
 });
 
 $app->group('', function ($group) {
     $group->get('/getFavoriteUsersByUserId', FavoriteUserController::class . ':getFavoriteUsersByUserId')->setName('getFavoriteUsersByUserId');
-    $group->get('/getFavoriteUsersByCategoryId', FavoriteUserController::class . ':getFavoriteUsersByCategoryId')->setName('getFavoriteUsersByCategoryId');
     $group->post('/addFavoriteUser', FavoriteUserController::class . ':addFavoriteUser')->setName('addFavoriteUser');
 });
 

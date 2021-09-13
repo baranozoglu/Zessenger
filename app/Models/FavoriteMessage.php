@@ -8,6 +8,8 @@ class FavoriteMessage extends Model
 {
 	protected $table = 'favorite_messages';
 
+	private $user_id;
+
     private $sender_id;
 
     private $receiver_id;
@@ -15,7 +17,8 @@ class FavoriteMessage extends Model
     private $message_id;
 
 	protected $fillable = [
-		'sender_id',
+        'user_id',
+        'sender_id',
 		'receiver_id',
 		'message_id',
 	];
@@ -66,6 +69,22 @@ class FavoriteMessage extends Model
     public function setMessageId($message_id): void
     {
         $this->message_id = $message_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param mixed $user_id
+     */
+    public function setUserId($user_id): void
+    {
+        $this->user_id = $user_id;
     }
 	
 }

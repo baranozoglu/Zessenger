@@ -1,9 +1,8 @@
 <?php
-
-
 namespace App\Controllers;
 
 use App\Models\FavoriteUserCategory;
+use Exception;
 
 class FavoriteUserCategoryController extends Controller
 {
@@ -16,7 +15,7 @@ class FavoriteUserCategoryController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
     }
 
@@ -24,17 +23,20 @@ class FavoriteUserCategoryController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-
-            $favorite_user_category = FavoriteUserCategory::create([
-                'user_id' => $data['user_id'],
-                'name' => $data['name'],
-            ]);
-
+            $favorite_user_category = $this->save($data);
             $response->getBody()->write(json_encode($favorite_user_category));
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus(500);
+            return $response->withStatus($ex->getCode());
         }
+    }
+
+    private function save($data) {
+        return FavoriteUserCategory::updateOrCreate(['id' => $data['id'],],
+            [
+            'user_id' => $data['user_id'],
+            'name' => $data['name'],
+        ]);
     }
 }
