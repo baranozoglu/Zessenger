@@ -12,54 +12,59 @@ use App\Controllers\MessageController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\GuestMiddleware;
 
-$app->get('/', HomeController::class . ':index')->setName('home');
+$app->get('/', HomeController::class . ':index');
 
-$app->get('/users', UserController::class . ':getUsers')->setName("getAllUsers");
+$app->get('/users', UserController::class . ':getUsers');
 
-$app->group('', function ($group) {
-	$group->get('/auth/signup', AuthController::class . ':getSignUp')->setName('auth.signup');
-	$group->post('/auth/signup', AuthController::class . ':postSignUp');
-	$group->get('/auth/signin', AuthController::class . ':getSignIn')->setName('auth.signin');
-	$group->post('/auth/signin', AuthController::class . ':postSignIn');
+$app->group('/auth', function ($group) {
+	$group->get('/signup', AuthController::class . ':getSignUp');
+	$group->post('/signup', AuthController::class . ':postSignUp');
+	$group->get('/signin', AuthController::class . ':getSignIn');
+	$group->post('/signin', AuthController::class . ':postSignIn');
 })->add(new GuestMiddleware($container));
 
-$app->group('', function ($group) {
-    $group->get('/getMessages', MessageController::class . ':getMessagesBySenderAndReceiver')->setName('getMessages');
-    $group->post('/sendMessage', MessageController::class . ':addMessage')->setName('sendMessages');
-    $group->put('/updateMessage', MessageController::class . ':addMessage')->setName('addMessage');
+$app->group('/messages', function ($group) {
+    $group->get('', MessageController::class . ':getMessagesBySenderAndReceiver');
+    $group->post('/add', MessageController::class . ':addMessage');
+    $group->post('/update', MessageController::class . ':addMessage');
 });
 
-$app->group('', function ($group) {
-    $group->get('/getBlockedUserByUserId', BlockedUserController::class . ':getBlockedUserByUserId')->setName('getBlockedUserByUserId');
-    $group->post('/addBlockedUser', BlockedUserController::class . ':addBlockedUser')->setName('addBlockedUser');
+$app->group('/blocked-users', function ($group) {
+    $group->get('', BlockedUserController::class . ':getBlockedUserByUserId');
+    $group->post('/add', BlockedUserController::class . ':addBlockedUser');
+    $group->post('/update', BlockedUserController::class . ':addBlockedUser');
 });
 
-$app->group('', function ($group) {
-    $group->get('/getFavoriteMessagesBySenderAndReceiver', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver')->setName('getFavoriteMessagesBySenderAndReceiver');
-    $group->post('/addFavoriteMessage', FavoriteMessageController::class . ':addFavoriteMessage')->setName('addFavoriteMessage');
-    $group->delete('/deleteFavoriteMessage', FavoriteMessageController::class . ':deleteFavoriteMessage')->setName('deleteFavoriteMessage');
+$app->group('/favorite-messages', function ($group) {
+    $group->get('', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
+    $group->post('/add', FavoriteMessageController::class . ':addFavoriteMessage');
+    $group->post('/update', FavoriteMessageController::class . ':addFavoriteMessage');
+    $group->delete('/delete', FavoriteMessageController::class . ':deleteFavoriteMessage');
 });
 
-$app->group('', function ($group) {
-    $group->get('/getFavoriteUserCategoriesByUserId', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId')->setName('getFavoriteUserCategoriesByUserId');
-    $group->post('/addFavoriteUserCategory', FavoriteUserCategoryController::class . ':addFavoriteUserCategory')->setName('addFavoriteUserCategory');
-    $group->delete('/deleteFavoriteUserCategory', FavoriteUserCategoryController::class . ':deleteFavoriteUserCategory')->setName('deleteFavoriteUserCategory');
+$app->group('/favorite-user-categories', function ($group) {
+    $group->get('', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
+    $group->post('/add', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
+    $group->post('/update', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
+    $group->delete('/delete', FavoriteUserCategoryController::class . ':deleteFavoriteUserCategory');
 });
 
-$app->group('', function ($group) {
-    $group->get('/getFavoriteUsersByUserId', FavoriteUserController::class . ':getFavoriteUsersByUserId')->setName('getFavoriteUsersByUserId');
-    $group->post('/addFavoriteUser', FavoriteUserController::class . ':addFavoriteUser')->setName('addFavoriteUser');
+$app->group('/favorite-users', function ($group) {
+    $group->get('', FavoriteUserController::class . ':getFavoriteUsersByUserId');
+    $group->post('/add', FavoriteUserController::class . ':addFavoriteUser');
+    $group->post('/update', FavoriteUserController::class . ':addFavoriteUser');
 });
 
-$app->group('', function ($group) {
-    $group->get('/getLoginsByUserId', LoginController::class . ':getLoginsByUserId')->setName('getLoginsByUserId');
-    $group->post('/addLogin', LoginController::class . ':addLogin')->setName('addLogin');
+$app->group('/logins', function ($group) {
+    $group->get('', LoginController::class . ':getLoginsByUserId');
+    $group->post('/add', LoginController::class . ':addLogin');
+    $group->post('/update', LoginController::class . ':addLogin');
 });
 
-$app->group('', function ($group) {
-	$group->get('/auth/signout', AuthController::class . ':getSignOut')->setName('auth.signout');
-	$group->get('/auth/password/change', PasswordController::class . ':getChangePassword')->setName('auth.password.change');
-	$group->post('/auth/password/change', PasswordController::class . ':postChangePassword');
+$app->group('/auth', function ($group) {
+	$group->get('/signout', AuthController::class . ':getSignOut');
+	$group->get('/password/change', PasswordController::class . ':getChangePassword');
+	$group->post('/password/change', PasswordController::class . ':postChangePassword');
 })->add(new AuthMiddleware($container));
 
 
