@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BlockedUser extends Model
 {
-	protected $table = 'blacklist';
+	protected $table = 'blocked_users';
 
 	private $user_id;
 

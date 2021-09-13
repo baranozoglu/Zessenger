@@ -22,9 +22,9 @@ CREATE TABLE users (
 CREATE TABLE messages (
                           id INTEGER PRIMARY KEY,
                           text TEXT NOT NULL,
-                          status_for_sender BOOLEAN NOT NULL DEFAULT true,
-                          status_for_receiver BOOLEAN NOT NULL DEFAULT true,
-                          isEdited BOOLEAN NOT NULL DEFAULT false,
+                          status_for_sender BOOLEAN DEFAULT true,
+                          status_for_receiver BOOLEAN DEFAULT true,
+                          isEdited BOOLEAN DEFAULT false,
                           sender_id INTEGER NOT NULL,
                           receiver_id INTEGER NOT NULL,
                           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

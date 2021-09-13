@@ -9,8 +9,13 @@ class UserController extends Controller
 {
     public function getUsers($request, $response)
     {
-        $users = User::all();
-        $response->getBody()->write(json_encode($users));
-        return $response;
+        try {
+            $users = User::all();
+            $response->getBody()->write(json_encode($users));
+            return $response;
+        } catch (Exception $ex) {
+            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            return $response->withStatus(500);
+        }
     }
 }
