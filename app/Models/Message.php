@@ -9,12 +9,12 @@ class Message extends Model
 {
     protected $table = 'messages';
 
-    public $text;
-    public $status_for_sender;
-    public $status_for_receiver;
-    public $sender_id;
-    public $receiver_id;
-    public $timestamps = false;
+    private $text;
+    private $status_for_sender;
+    private $status_for_receiver;
+    private $sender_id;
+    private $receiver_id;
+    private $isEdited;
 
     protected $fillable = [
         'text',
@@ -22,6 +22,7 @@ class Message extends Model
         'status_for_receiver',
         'sender_id',
         'receiver_id',
+        'isEdited',
     ];
 
     /**

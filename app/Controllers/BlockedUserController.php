@@ -4,23 +4,23 @@
 namespace App\Controllers;
 
 
-use App\Models\Blacklist;
+use App\Models\BlockedUser;
 
-class BlacklistController extends Controller
+class BlockedUserController extends Controller
 {
-    public function getBlacklistByUserId($request, $response)
+    public function getBlockedUserByUserId($request, $response)
     {
         $data = $request->getQueryParams();
-        $blacklist = Blacklist::whereRaw('user_id = ? ', [$data['user_id']])->get();
+        $blacklist = BlockedUser::whereRaw('user_id = ? ', [$data['user_id']])->get();
         $response->getBody()->write(json_encode($blacklist));
         return $response;
     }
 
-    public function addUserToBlacklist($request, $response)
+    public function addBlockedUser($request, $response)
     {
         $data = $request->getParsedBody();
 
-        $blocked_user = Blacklist::create([
+        $blocked_user = BlockedUser::create([
             'user_id' => $data['user_id'],
             'blocked_user_id' => $data['blocked_user_id'],
         ]);

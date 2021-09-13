@@ -4,15 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Blacklist extends Model
+class BlockedUser extends Model
 {
 	protected $table = 'blacklist';
 
-	public $user_id;
+	private $user_id;
 
-	public $blocked_user_id;
-
-    public $timestamps = false;
+    private $blocked_user_id;
 
 	protected $fillable = [
 		'user_id',

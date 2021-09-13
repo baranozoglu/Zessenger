@@ -8,19 +8,13 @@ class User extends Model
 {
 	protected $table = 'users';
 
-	public $first_name;
-
-	public $last_name;
-
-	public $email;
-
-	public $phone;
-	
-	public $username;
-	
-	public $password;
-	
-	public $photo_url;
+    private $first_name;
+    private $last_name;
+    private $email;
+    private $phone;
+    private $username;
+    private $password;
+    private $photo_url;
 
     public $timestamps = false;
 

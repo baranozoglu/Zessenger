@@ -8,13 +8,11 @@ class FavoriteMessage extends Model
 {
 	protected $table = 'favorite_messages';
 
-	public $sender_id;
+    private $sender_id;
 
-	public $receiver_id;
+    private $receiver_id;
 
-	public $message_id;
-
-    public $timestamps = false;
+    private $message_id;
 
 	protected $fillable = [
 		'sender_id',

@@ -8,15 +8,13 @@ class FavoriteUser extends Model
 {
 	protected $table = 'favorite_users';
 
-	public $nickname;
+    private $nickname;
 
-	public $user_id;
+    private $user_id;
 
-	public $favorite_user_id;
+    private $favorite_user_id;
 
-	public $favorite_user_category_id;
-
-    public $timestamps = false;
+    private $favorite_user_category_id;
 
 	protected $fillable = [
 		'nickname',

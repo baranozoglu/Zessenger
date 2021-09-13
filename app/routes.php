@@ -3,7 +3,7 @@ use App\Controllers\Auth\AuthController;
 use App\Controllers\Auth\PasswordController;
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
-use App\Controllers\BlacklistController;
+use App\Controllers\BlockedUserController;
 use App\Controllers\FavoriteUserController;
 use App\Controllers\FavoriteUserCategoryController;
 use App\Controllers\FavoriteMessageController;
@@ -29,8 +29,8 @@ $app->group('', function ($group) {
 });
 
 $app->group('', function ($group) {
-    $group->get('/getBlacklistByUserId', BlacklistController::class . ':getBlacklistByUserId')->setName('getBlacklistByUserId');
-    $group->post('/addUserToBlacklist', BlacklistController::class . ':addUserToBlacklist')->setName('addUserToBlacklist');
+    $group->get('/getBlockedUserByUserId', BlockedUserController::class . ':getBlockedUserByUserId')->setName('getBlockedUserByUserId');
+    $group->post('/addBlockedUser', BlockedUserController::class . ':addBlockedUser')->setName('addBlockedUser');
 });
 
 $app->group('', function ($group) {

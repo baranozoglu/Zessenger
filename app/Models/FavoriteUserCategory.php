@@ -8,11 +8,9 @@ class FavoriteUserCategory extends Model
 {
 	protected $table = 'favorite_user_caregories';
 
-	public $name;
+    private $name;
 
-	public $user_id;
-
-    public $timestamps = false;
+    private $user_id;
 
 	protected $fillable = [
 		'name',

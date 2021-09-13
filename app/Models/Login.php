@@ -8,9 +8,7 @@ class Login extends Model
 {
 	protected $table = 'logins';
 
-	public $user_id;
-
-    public $timestamps = false;
+    private $user_id;
 
 	protected $fillable = [
 		'user_id',
