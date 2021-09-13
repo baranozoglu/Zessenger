@@ -2,8 +2,8 @@
 namespace App\Controllers;
 
 use App\Models\FavoriteMessage;
+use App\Models\Message;
 use Exception;
-use http\Message;
 
 class FavoriteMessageController extends Controller
 {
@@ -28,7 +28,6 @@ class FavoriteMessageController extends Controller
             $data = $request->getParsedBody();
             $this->validate($data);
             $favorite_message = $this->save($data);
-
             $response->getBody()->write(json_encode($favorite_message));
             return $response;
         } catch (Exception $ex) {
@@ -36,7 +35,18 @@ class FavoriteMessageController extends Controller
             return $response->withStatus($ex->getCode());
         }
     }
-
+/*
+    public function deleteFavoriteMessage($request, $response) {
+        try {
+            $data = $request->getParsedBody();
+            FavoriteMessage::destroy($data['id']);
+            return $response;
+        } catch (Exception $ex) {
+            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            return $response->withStatus($ex->getCode());
+        }
+    }
+*/
     private function validate($data) {
         $message = Message::whereRaw('id = ? ', [$data['message_id']])->get();
         if(count($message) == 0) {
@@ -45,13 +55,17 @@ class FavoriteMessageController extends Controller
     }
 
     private function save($data) {
-        return FavoriteMessage::updateOrCreate(['id' => $data['id'],],
-            [
-            'message_id' => $data['message_id'],
-            'user_id' => $data['user_id'],
-            'sender_id' => $data['sender_id'],
-            'receiver_id' => $data['receiver_id'],
-            ]
-        );
+        try {
+            return FavoriteMessage::updateOrCreate(['id' => $data['id']],
+                [
+                    'message_id' => $data['message_id'],
+                    'user_id' => $data['user_id'],
+                    'sender_id' => $data['sender_id'],
+                    'receiver_id' => $data['receiver_id'],
+                ]
+            );
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while inserting data to database!',500);
+        }
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Models\BlockedUser;
+use App\Models\FavoriteUserCategory;
 use Exception;
 
 class BlockedUserController extends Controller
@@ -41,11 +42,15 @@ class BlockedUserController extends Controller
     }
 
     private function save($data) {
-        return BlockedUser::updateOrCreate(['id' => $data['id'],],
-            [
-            'user_id' => $data['user_id'],
-            'blocked_user_id' => $data['blocked_user_id'],
-            ]
-        );
+        try {
+            return BlockedUser::updateOrCreate(['id' => $data['id']],
+                [
+                    'user_id' => $data['user_id'],
+                    'blocked_user_id' => $data['blocked_user_id'],
+                ]
+            );
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while inserting data to database!',500);
+        }
     }
 }

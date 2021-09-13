@@ -54,17 +54,21 @@ class MessageController extends Controller
     }
 
     private function save($data) {
-        return Message::updateOrCreate(['id' => $data['id'],],
-            [
-            'text' => $data['text'],
-            'sender_id' => $data['sender_id'],
-            'receiver_id' => $data['receiver_id'],
-            'status_for_sender' => $data['status_for_sender'],
-            'status_for_receiver' => $data['status_for_receiver'],
-            'isEdited' => $data['isEdited'],
-            'parent_message_id' => $data['parent_message_id'],
-            ]
-        );
+        try {
+            return Message::updateOrCreate(['id' => $data['id']],
+                [
+                    'text' => $data['text'],
+                    'sender_id' => $data['sender_id'],
+                    'receiver_id' => $data['receiver_id'],
+                    'status_for_sender' => $data['status_for_sender'],
+                    'status_for_receiver' => $data['status_for_receiver'],
+                    'isEdited' => $data['isEdited'],
+                    'parent_message_id' => $data['parent_message_id'],
+                ]
+            );
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while inserting data to database!',500);
+        }
     }
 
 }

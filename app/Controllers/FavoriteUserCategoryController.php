@@ -33,10 +33,14 @@ class FavoriteUserCategoryController extends Controller
     }
 
     private function save($data) {
-        return FavoriteUserCategory::updateOrCreate(['id' => $data['id'],],
-            [
-            'user_id' => $data['user_id'],
-            'name' => $data['name'],
-        ]);
+        try {
+            return FavoriteUserCategory::updateOrCreate(['id' => $data['id']],
+                [
+                    'user_id' => $data['user_id'],
+                    'name' => $data['name'],
+                ]);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while inserting data to database!',500);
+        }
     }
 }

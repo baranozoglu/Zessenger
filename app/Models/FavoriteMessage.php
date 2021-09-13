@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,10 +16,10 @@ class FavoriteMessage extends Model
     private $message_id;
 
 	protected $fillable = [
+		'message_id',
         'user_id',
         'sender_id',
 		'receiver_id',
-		'message_id',
 	];
 
     /**

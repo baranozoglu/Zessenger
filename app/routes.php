@@ -39,14 +39,14 @@ $app->group('/favorite-messages', function ($group) {
     $group->get('', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
     $group->post('/add', FavoriteMessageController::class . ':addFavoriteMessage');
     $group->post('/update', FavoriteMessageController::class . ':addFavoriteMessage');
-    $group->delete('/delete', FavoriteMessageController::class . ':deleteFavoriteMessage');
+    //$group->delete('/delete', FavoriteMessageController::class . ':deleteFavoriteMessage');
 });
 
 $app->group('/favorite-user-categories', function ($group) {
     $group->get('', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
     $group->post('/add', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
     $group->post('/update', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
-    $group->delete('/delete', FavoriteUserCategoryController::class . ':deleteFavoriteUserCategory');
+    //$group->delete('/delete', FavoriteUserCategoryController::class . ':deleteFavoriteUserCategory');
 });
 
 $app->group('/favorite-users', function ($group) {

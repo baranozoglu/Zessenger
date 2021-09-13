@@ -51,12 +51,16 @@ class FavoriteUserController extends Controller
     }
 
     private function save($data) {
-        return FavoriteUser::updateOrCreate(['id' => $data['id'],],
-            [
-            'user_id' => $data['user_id'],
-            'favorite_user_category_id' => $data['favorite_user_category_id'],
-            'favorite_user_id' => $data['favorite_user_id'],
-            'nickname' => $data['nickname'],
-        ]);
+        try {
+            return FavoriteUser::updateOrCreate(['id' => $data['id']],
+                [
+                    'user_id' => $data['user_id'],
+                    'favorite_user_category_id' => $data['favorite_user_category_id'],
+                    'favorite_user_id' => $data['favorite_user_id'],
+                    'nickname' => $data['nickname'],
+                ]);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while inserting data to database!',500);
+        }
     }
 }
