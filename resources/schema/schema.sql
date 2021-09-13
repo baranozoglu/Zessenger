@@ -93,3 +93,9 @@ CREATE TABLE favorite_messages (
                                    FOREIGN KEY (message_id)
                                        REFERENCES messages (id)
 );
+
+INSERT INTO "users" ("id", "first_name", "last_name", "email", "phone", "password", "username", "photo_url", "created_at", "updated_at") VALUES
+('1', 'baran', 'ozoglu', 'baran@asd.com', '14353453453', 'admin', 'hakanozoglu', '', NULL, NULL);
+
+INSERT INTO "users" ("id", "first_name", "last_name", "email", "phone", "password", "username", "photo_url", "created_at", "updated_at") VALUES
+('2', 'hakan', 'ozoglu', 'hakan@asd.com', '24353453453', 'admin', 'hakanozoglu', '', NULL, NULL);
