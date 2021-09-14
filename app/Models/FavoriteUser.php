@@ -15,11 +15,14 @@ class FavoriteUser extends Model
 
     private $favorite_user_category_id;
 
+    private $last_message_time;
+
 	protected $fillable = [
 		'nickname',
 		'user_id',
 		'favorite_user_id',
 		'favorite_user_category_id',
+        'last_message_time',
 	];
 
     /**
@@ -84,6 +87,22 @@ class FavoriteUser extends Model
     public function setFavoriteUserCategoryId($favorite_user_category_id): void
     {
         $this->favorite_user_category_id = $favorite_user_category_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastMessageTime()
+    {
+        return $this->last_message_time;
+    }
+
+    /**
+     * @param mixed $last_message_time
+     */
+    public function setLastMessageTime($last_message_time): void
+    {
+        $this->last_message_time = $last_message_time;
     }
 
 

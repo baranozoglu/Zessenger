@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Models\BlockedUser;
+use App\Models\FavoriteUser;
 use App\Models\Message;
 use App\Models\User;
 use Exception;
@@ -25,8 +26,12 @@ class MessageController extends Controller
         try {
             $data = $request->getParsedBody();
             $this->validate($data);
-            $user = $this->save($data);
-            $response->getBody()->write(json_encode($user));
+            $message = $this->save($data);
+
+            $id_list = FavoriteUserController::findFavoriteUserIdList($data);
+            FavoriteUserController::updateLastMessageTime($id_list);
+
+            $response->getBody()->write(json_encode($message));
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));

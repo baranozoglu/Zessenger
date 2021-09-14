@@ -2,7 +2,9 @@
 namespace App\Controllers;
 
 use App\Models\FavoriteUser;
+use App\Models\User;
 use App\Models\FavoriteUserCategory;
+use DateTime;
 use Exception;
 
 class FavoriteUserController extends Controller
@@ -62,19 +64,54 @@ class FavoriteUserController extends Controller
                     'favorite_user_category_id' => $data['favorite_user_category_id'],
                     'favorite_user_id' => $data['favorite_user_id'],
                     'nickname' => $data['nickname'],
+                    'last_message_time' => $data['last_message_time'],
                 ]);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while inserting data to database!',500);
         }
     }
 
-    private function query($args) {
+    public function query($args) {
         try {
             return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
                 ->whereRaw('favorite_users.user_id = ?', [$args['user_id']])
                 ->get(['favorite_users.*', 'favorite_user_categories.name']);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);
+        }
+    }
+
+    public function updateLastMessageTime($id_list) {
+        try {
+            FavoriteUser::whereRaw('id in (?)', [$id_list])
+                ->update(['last_message_time' => date('Y-m-d H:i:s')]);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while updating last message time on database!',500);
+        }
+    }
+
+    public function findFavoriteUserIdList($data) {
+        try {
+            $obj_list = FavoriteUser::whereRaw('favorite_user_id = ? or user_id = ?', [$data['sender_id'], $data['sender_id']])
+                ->get('id');
+            return $this->converter($obj_list);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while getting data from database!',500);
+        }
+    }
+
+    private function converter($obj_list) {
+        try {
+            if (count($obj_list) == 0) {
+                throw new Exception();
+            }
+            $id_list = array();
+            foreach ($obj_list as $obj) {
+                array_push($id_list, $obj['id']);
+            }
+            return $id_list;
+        } catch (Exception $ex) {
+            throw new Exception('Could not send message to user who is not in your favorite user list!',500);
         }
     }
 }
