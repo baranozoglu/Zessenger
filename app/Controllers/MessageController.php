@@ -2,7 +2,6 @@
 namespace App\Controllers;
 
 use App\Models\BlockedUser;
-use App\Models\FavoriteUser;
 use App\Models\Message;
 use App\Models\User;
 use Exception;
@@ -48,7 +47,7 @@ class MessageController extends Controller
         }
     }
 
-    private function validate($data) {
+    public function validate($data) {
         $receiver_user = User::whereRaw('id = ? ', [$data['receiver_id']])->get();
         if(count($receiver_user) == 0) {
             throw new Exception('Could not find user which you want to send message!',404);

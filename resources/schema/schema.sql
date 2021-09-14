@@ -104,6 +104,13 @@ CREATE TABLE favorite_messages (
                                        REFERENCES messages (id)
 );
 
+CREATE TABLE files (
+                                   id INTEGER PRIMARY KEY,
+                                   filename TEXT NOT NULL,
+                                   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                   updated_at DATETIME
+);
+
 INSERT INTO "users" ("id", "first_name", "last_name", "email", "phone", "password", "username", "photo_url", "created_at", "updated_at") VALUES
 ('1', 'baran', 'ozoglu', 'baran@asd.com', '14353453453', 'admin', 'baranozoglu', '', NULL, NULL);
 

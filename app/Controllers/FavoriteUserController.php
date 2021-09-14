@@ -111,7 +111,7 @@ class FavoriteUserController extends Controller
             }
             return $id_list;
         } catch (Exception $ex) {
-            throw new Exception('Could not send message to user who is not in your favorite user list!',500);
+            throw new Exception('Could not send message to user who is not in your favorite user list!',400);
         }
     }
 }

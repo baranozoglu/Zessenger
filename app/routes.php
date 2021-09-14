@@ -9,6 +9,7 @@ use App\Controllers\FavoriteUserCategoryController;
 use App\Controllers\FavoriteMessageController;
 use App\Controllers\LoginController;
 use App\Controllers\MessageController;
+use App\Controllers\FileController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\GuestMiddleware;
 
@@ -64,6 +65,12 @@ $app->group('/logins', function ($group) {
     $group->post('', LoginController::class . ':addLogin');
     $group->put('', LoginController::class . ':addLogin');
     $group->delete('/{id}', LoginController::class . ':delete');
+});
+
+$app->group('/files', function ($group) {
+    $group->get('/{id}', FileController::class . ':getFileById');
+    $group->post('', FileController::class . ':fileUpload');
+    $group->delete('/{id}', FileController::class . ':delete');
 });
 
 $app->group('/auth', function ($group) {
