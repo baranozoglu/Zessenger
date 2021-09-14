@@ -41,28 +41,28 @@ $app->group('/blocked-users', function ($group) {
 $app->group('/favorite-messages', function ($group) {
     $group->get('/{user_id}', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
     $group->post('', FavoriteMessageController::class . ':addFavoriteMessage');
-    $group->post('', FavoriteMessageController::class . ':addFavoriteMessage');
+    $group->put('', FavoriteMessageController::class . ':addFavoriteMessage');
     $group->delete('/{id}', FavoriteMessageController::class . ':delete');
 });
 
 $app->group('/favorite-user-categories', function ($group) {
     $group->get('/{user_id}', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
     $group->post('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
-    $group->post('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
+    $group->put('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
     $group->delete('/{id}', FavoriteUserCategoryController::class . ':delete');
 });
 
 $app->group('/favorite-users', function ($group) {
     $group->get('/{user_id}', FavoriteUserController::class . ':getFavoriteUsersByUserId');
     $group->post('', FavoriteUserController::class . ':addFavoriteUser');
-    $group->post('', FavoriteUserController::class . ':addFavoriteUser');
+    $group->put('', FavoriteUserController::class . ':addFavoriteUser');
     $group->delete('/{id}', FavoriteUserController::class . ':delete');
 });
 
 $app->group('/logins', function ($group) {
     $group->get('/{user_id}', LoginController::class . ':getLoginsByUserId');
     $group->post('', LoginController::class . ':addLogin');
-    $group->post('', LoginController::class . ':addLogin');
+    $group->put('', LoginController::class . ':addLogin');
     $group->delete('/{id}', LoginController::class . ':delete');
 });
 

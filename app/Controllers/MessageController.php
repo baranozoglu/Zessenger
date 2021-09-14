@@ -11,13 +11,7 @@ class MessageController extends Controller
     public function getMessagesBySenderAndReceiver($request, $response, $args)
     {
         try {
-            $data = $request->getQueryParams();
-            $messages = Message::leftJoin('messages as m', 'messages.parent_message_id', '=', 'm.id')
-                ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
-                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$args['sender_id'], $args['receiver_id'], $args['receiver_id'], $args['sender_id']])
-                ->get(['messages.*', 'm.text as parent_message_text', 'users.id as receiver_name']);
-                //->get(['messages.*', 'm.text as parent_message_text']);
-
+            $messages = $this->query($args);
             $response->getBody()->write(json_encode($messages));
             return $response;
         } catch (Exception $ex) {
@@ -76,6 +70,17 @@ class MessageController extends Controller
             );
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while inserting data to database!',500);
+        }
+    }
+
+    private function query($args) {
+        try {
+            return Message::leftJoin('messages as m', 'messages.parent_message_id', '=', 'm.id')
+                ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
+                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$args['sender_id'], $args['receiver_id'], $args['receiver_id'], $args['sender_id']])
+                ->get(['messages.*', 'm.text as parent_message_text', 'users.username as sender_name']);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while getting data from database!',500);
         }
     }
 

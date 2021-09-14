@@ -9,7 +9,7 @@ class BlockedUserController extends Controller
     public function getBlockedUserByUserId($request, $response, $args)
     {
         try {
-            $blacklist = BlockedUser::whereRaw('user_id = ? ', [$args['user_id']])->get();
+            $blacklist = $this->query($args);
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
@@ -58,6 +58,14 @@ class BlockedUserController extends Controller
             );
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while inserting data to database!',500);
+        }
+    }
+
+    private function query($args) {
+        try {
+            return BlockedUser::whereRaw('user_id = ? ', [$args['user_id']])->get();
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while getting data from database!',500);
         }
     }
 }

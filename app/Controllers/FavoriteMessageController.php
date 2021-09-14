@@ -10,9 +10,7 @@ class FavoriteMessageController extends Controller
     public function getFavoriteMessagesBySenderAndReceiver($request, $response, $args)
     {
         try {
-            $favorite_messages = FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
-                ->whereRaw('user_id = ? order by created_at', [$args['user_id']])
-                ->get(['favorite_messages.*','users.username']);
+            $favorite_messages = $this->query($args);
             $response->getBody()->write(json_encode($favorite_messages));
             return $response;
         } catch (Exception $ex) {
@@ -63,6 +61,16 @@ class FavoriteMessageController extends Controller
             );
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while inserting data to database!',500);
+        }
+    }
+
+    private function query($args) {
+        try {
+            return FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
+                ->whereRaw('user_id = ? order by created_at', [$args['user_id']])
+                ->get(['favorite_messages.*','users.username as sender_name']);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while getting data from database!',500);
         }
     }
 }

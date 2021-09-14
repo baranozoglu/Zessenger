@@ -10,10 +10,7 @@ class FavoriteUserController extends Controller
     public function getFavoriteUsersByUserId($request, $response, $args)
     {
         try {
-            $favorite_users= FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
-                ->whereRaw('favorite_users.user_id = ?', [$args['user_id']])
-                ->get(['favorite_users.*', 'favorite_user_categories.name']);
-
+            $favorite_users = $this->query($args);
             $response->getBody()->write(json_encode($favorite_users));
             return $response;
         } catch (Exception $ex) {
@@ -68,6 +65,16 @@ class FavoriteUserController extends Controller
                 ]);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while inserting data to database!',500);
+        }
+    }
+
+    private function query($args) {
+        try {
+            return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
+                ->whereRaw('favorite_users.user_id = ?', [$args['user_id']])
+                ->get(['favorite_users.*', 'favorite_user_categories.name']);
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while getting data from database!',500);
         }
     }
 }
