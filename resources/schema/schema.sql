@@ -28,6 +28,7 @@ CREATE TABLE messages (
                           sender_id INTEGER NOT NULL,
                           receiver_id INTEGER NOT NULL,
                           parent_message_id INTEGER,
+                          file_id INTEGER,
                           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           updated_at DATETIME,
                           FOREIGN KEY (sender_id)
@@ -107,8 +108,14 @@ CREATE TABLE favorite_messages (
 CREATE TABLE files (
                                    id INTEGER PRIMARY KEY,
                                    filename TEXT NOT NULL,
+                                   sender_id INTEGER NOT NULL,
+                                   receiver_id INTEGER NOT NULL,
                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                   updated_at DATETIME
+                                   updated_at DATETIME,
+                                   FOREIGN KEY (sender_id)
+                                       REFERENCES users (id),
+                                   FOREIGN KEY (receiver_id)
+                                       REFERENCES users (id)
 );
 
 INSERT INTO "users" ("id", "first_name", "last_name", "email", "phone", "password", "username", "photo_url", "created_at", "updated_at") VALUES

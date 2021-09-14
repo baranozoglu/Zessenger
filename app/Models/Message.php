@@ -14,6 +14,7 @@ class Message extends Model
     private $receiver_id;
     private $isEdited;
     private $parent_message_id;
+    private $file_id;
 
     protected $fillable = [
         'text',

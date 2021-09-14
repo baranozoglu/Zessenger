@@ -8,10 +8,11 @@ use Exception;
 
 class MessageController extends Controller
 {
-    public function getMessagesBySenderAndReceiver($request, $response, $args)
+    public function getMessagesBySenderAndReceiver($request, $response)
     {
         try {
-            $messages = $this->query($args);
+            $data = $request->getParsedBody();
+            $messages = $this->query($data);
             $response->getBody()->write(json_encode($messages));
             return $response;
         } catch (Exception $ex) {
@@ -70,6 +71,7 @@ class MessageController extends Controller
                     'status_for_receiver' => $data['status_for_receiver'],
                     'isEdited' => $data['isEdited'],
                     'parent_message_id' => $data['parent_message_id'],
+                    'file_id' => $data['file_id'],
                 ]
             );
         } catch (Exception $ex) {
@@ -77,12 +79,13 @@ class MessageController extends Controller
         }
     }
 
-    private function query($args) {
+    private function query($data) {
         try {
             return Message::leftJoin('messages as m', 'messages.parent_message_id', '=', 'm.id')
                 ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
-                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$args['sender_id'], $args['receiver_id'], $args['receiver_id'], $args['sender_id']])
-                ->get(['messages.*', 'm.text as parent_message_text', 'users.username as sender_name']);
+                ->leftJoin('files', 'messages.file_id', '=', 'files.id')
+                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$data['sender_id'], $data['receiver_id'], $data['receiver_id'], $data['sender_id']])
+                ->get(['messages.*', 'm.text as parent_message_text', 'users.username as sender_name', 'files.id']);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);
         }

@@ -9,8 +9,14 @@ class File extends Model
 
     private $filename;
 
+    private $sender_id;
+
+    private $receiver_id;
+
 	protected $fillable = [
 		'filename',
+		'sender_id',
+		'receiver_id',
 	];
 
     /**
@@ -29,5 +35,36 @@ class File extends Model
         $this->filename = $filename;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getReceiverId()
+    {
+        return $this->receiver_id;
+    }
+
+    /**
+     * @param mixed $receiver_id
+     */
+    public function setReceiverId($receiver_id): void
+    {
+        $this->receiver_id = $receiver_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSenderId()
+    {
+        return $this->sender_id;
+    }
+
+    /**
+     * @param mixed $sender_id
+     */
+    public function setSenderId($sender_id): void
+    {
+        $this->sender_id = $sender_id;
+    }
 
 }

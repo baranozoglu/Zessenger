@@ -21,12 +21,12 @@ $app->group('/auth', function ($group) {
 })->add(new GuestMiddleware($container));
 
 $app->group('/users', function ($group) {
-    $group->get('/', UserController::class . ':getUsers');
+    $group->get('', UserController::class . ':getUsers');
     $group->delete('/{id}', UserController::class . ':delete');
 });
 
 $app->group('/messages', function ($group) {
-    $group->get('/{sender_id}/{receiver_id}', MessageController::class . ':getMessagesBySenderAndReceiver');
+    $group->get('', MessageController::class . ':getMessagesBySenderAndReceiver');
     $group->post('', MessageController::class . ':addMessage');
     $group->put('', MessageController::class . ':addMessage');
     $group->delete('/{id}', MessageController::class . ':delete');
@@ -68,9 +68,8 @@ $app->group('/logins', function ($group) {
 });
 
 $app->group('/files', function ($group) {
-    $group->get('/{id}', FileController::class . ':getFileById');
+    $group->get('', FileController::class . ':getFile');
     $group->post('', FileController::class . ':fileUpload');
-    $group->delete('/{id}', FileController::class . ':delete');
 });
 
 $app->group('/auth', function ($group) {
