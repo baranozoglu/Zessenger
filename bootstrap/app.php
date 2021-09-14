@@ -1,7 +1,6 @@
 <?php
 
 use DI\Container;
-use Respect\Validation\Validator as v;
 use Slim\Factory\AppFactory;
 
 session_start();
@@ -22,7 +21,7 @@ $app = AppFactory::create();
 $responseFactory = $app->getResponseFactory();
 
 $routeCollector = $app->getRouteCollector();
-//$routeCollector->setDefaultInvocationStrategy(new RequestResponseArgs());
+
 $routeParser = $app->getRouteCollector()->getRouteParser();
 
 $container->set('settings', function () {
@@ -48,12 +47,6 @@ $container->set('auth', function() {
 	return new \App\Auth\Auth;
 });
 
-$container->set('validator', function ($container) {
-	return new App\Validation\Validator;
-});
-
 $app->addBodyParsingMiddleware();
-
-v::with('App\\Validation\\Rules\\');
 
 require __DIR__ . '/../app/routes.php';
