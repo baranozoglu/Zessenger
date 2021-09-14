@@ -12,10 +12,6 @@ use App\Controllers\MessageController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\GuestMiddleware;
 
-$app->get('/', HomeController::class . ':index');
-
-$app->get('/users', UserController::class . ':getUsers');
-
 $app->group('/auth', function ($group) {
 	$group->get('/signup', AuthController::class . ':getSignUp');
 	$group->post('/signup', AuthController::class . ':postSignUp');
@@ -23,42 +19,51 @@ $app->group('/auth', function ($group) {
 	$group->post('/signin', AuthController::class . ':postSignIn');
 })->add(new GuestMiddleware($container));
 
+$app->group('/users', function ($group) {
+    $group->get('/', UserController::class . ':getUsers');
+    $group->delete('/{id}', UserController::class . ':delete');
+});
+
 $app->group('/messages', function ($group) {
-    $group->get('', MessageController::class . ':getMessagesBySenderAndReceiver');
-    $group->post('/add', MessageController::class . ':addMessage');
-    $group->post('/update', MessageController::class . ':addMessage');
+    $group->get('/{sender_id}/{receiver_id}', MessageController::class . ':getMessagesBySenderAndReceiver');
+    $group->post('', MessageController::class . ':addMessage');
+    $group->put('', MessageController::class . ':addMessage');
+    $group->delete('/{id}', MessageController::class . ':delete');
 });
 
 $app->group('/blocked-users', function ($group) {
-    $group->get('', BlockedUserController::class . ':getBlockedUserByUserId');
-    $group->post('/add', BlockedUserController::class . ':addBlockedUser');
-    $group->post('/update', BlockedUserController::class . ':addBlockedUser');
+    $group->get('/{user_id}', BlockedUserController::class . ':getBlockedUserByUserId');
+    $group->post('', BlockedUserController::class . ':addBlockedUser');
+    $group->put('', BlockedUserController::class . ':addBlockedUser');
+    $group->delete('/{id}', BlockedUserController::class . ':delete');
 });
 
 $app->group('/favorite-messages', function ($group) {
-    $group->get('', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
-    $group->post('/add', FavoriteMessageController::class . ':addFavoriteMessage');
-    $group->post('/update', FavoriteMessageController::class . ':addFavoriteMessage');
-    //$group->delete('/delete', FavoriteMessageController::class . ':deleteFavoriteMessage');
+    $group->get('/{user_id}', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
+    $group->post('', FavoriteMessageController::class . ':addFavoriteMessage');
+    $group->post('', FavoriteMessageController::class . ':addFavoriteMessage');
+    $group->delete('/{id}', FavoriteMessageController::class . ':delete');
 });
 
 $app->group('/favorite-user-categories', function ($group) {
-    $group->get('', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
-    $group->post('/add', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
-    $group->post('/update', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
-    //$group->delete('/delete', FavoriteUserCategoryController::class . ':deleteFavoriteUserCategory');
+    $group->get('/{user_id}', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
+    $group->post('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
+    $group->post('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
+    $group->delete('/{id}', FavoriteUserCategoryController::class . ':delete');
 });
 
 $app->group('/favorite-users', function ($group) {
-    $group->get('', FavoriteUserController::class . ':getFavoriteUsersByUserId');
-    $group->post('/add', FavoriteUserController::class . ':addFavoriteUser');
-    $group->post('/update', FavoriteUserController::class . ':addFavoriteUser');
+    $group->get('/{user_id}', FavoriteUserController::class . ':getFavoriteUsersByUserId');
+    $group->post('', FavoriteUserController::class . ':addFavoriteUser');
+    $group->post('', FavoriteUserController::class . ':addFavoriteUser');
+    $group->delete('/{id}', FavoriteUserController::class . ':delete');
 });
 
 $app->group('/logins', function ($group) {
-    $group->get('', LoginController::class . ':getLoginsByUserId');
-    $group->post('/add', LoginController::class . ':addLogin');
-    $group->post('/update', LoginController::class . ':addLogin');
+    $group->get('/{user_id}', LoginController::class . ':getLoginsByUserId');
+    $group->post('', LoginController::class . ':addLogin');
+    $group->post('', LoginController::class . ':addLogin');
+    $group->delete('/{id}', LoginController::class . ':delete');
 });
 
 $app->group('/auth', function ($group) {

@@ -6,11 +6,10 @@ use Exception;
 
 class FavoriteUserCategoryController extends Controller
 {
-    public function getFavoriteUserCategoriesByUserId($request, $response)
+    public function getFavoriteUserCategoriesByUserId($request, $response, $args)
     {
         try {
-            $data = $request->getQueryParams();
-            $blacklist = FavoriteUserCategory::whereRaw('user_id = ? ', [$data['user_id']])->get();
+            $blacklist = FavoriteUserCategory::whereRaw('user_id = ? ', [$args['user_id']])->get();
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
@@ -29,6 +28,15 @@ class FavoriteUserCategoryController extends Controller
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
             return $response->withStatus($ex->getCode());
+        }
+    }
+
+    public function delete($request, $response, $args) {
+        try {
+            FavoriteUserCategory::destroy($args['id']);
+            return $response;
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while deleting data from database!',500);
         }
     }
 

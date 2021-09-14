@@ -7,12 +7,11 @@ use Exception;
 
 class FavoriteMessageController extends Controller
 {
-    public function getFavoriteMessagesBySenderAndReceiver($request, $response)
+    public function getFavoriteMessagesBySenderAndReceiver($request, $response, $args)
     {
         try {
-            $data = $request->getQueryParams();
             $favorite_messages = FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
-                ->whereRaw('user_id = ? order by created_at', [$data['user_id']])
+                ->whereRaw('user_id = ? order by created_at', [$args['user_id']])
                 ->get(['favorite_messages.*','users.username']);
             $response->getBody()->write(json_encode($favorite_messages));
             return $response;
@@ -35,18 +34,16 @@ class FavoriteMessageController extends Controller
             return $response->withStatus($ex->getCode());
         }
     }
-/*
-    public function deleteFavoriteMessage($request, $response) {
+
+    public function delete($request, $response, $args) {
         try {
-            $data = $request->getParsedBody();
-            FavoriteMessage::destroy($data['id']);
+            FavoriteMessage::destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
-            return $response->withStatus($ex->getCode());
+            throw new Exception('Something went wrong while deleting data from database!',500);
         }
     }
-*/
+
     private function validate($data) {
         $message = Message::whereRaw('id = ? ', [$data['message_id']])->get();
         if(count($message) == 0) {

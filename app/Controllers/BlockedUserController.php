@@ -2,16 +2,14 @@
 namespace App\Controllers;
 
 use App\Models\BlockedUser;
-use App\Models\FavoriteUserCategory;
 use Exception;
 
 class BlockedUserController extends Controller
 {
-    public function getBlockedUserByUserId($request, $response)
+    public function getBlockedUserByUserId($request, $response, $args)
     {
         try {
-            $data = $request->getQueryParams();
-            $blacklist = BlockedUser::whereRaw('user_id = ? ', [$data['user_id']])->get();
+            $blacklist = BlockedUser::whereRaw('user_id = ? ', [$args['user_id']])->get();
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
@@ -31,6 +29,15 @@ class BlockedUserController extends Controller
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
             return $response->withStatus($ex->getCode());
+        }
+    }
+
+    public function delete($request, $response, $args) {
+        try {
+            BlockedUser::destroy($args['id']);
+            return $response;
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while deleting data from database!',500);
         }
     }
 

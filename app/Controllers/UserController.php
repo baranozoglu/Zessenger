@@ -17,4 +17,13 @@ class UserController extends Controller
             return $response->withStatus($ex->getCode());
         }
     }
+
+    public function delete($request, $response, $args) {
+        try {
+            User::destroy($args['id']);
+            return $response;
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while deleting data from database!',500);
+        }
+    }
 }

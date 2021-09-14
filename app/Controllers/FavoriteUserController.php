@@ -7,13 +7,11 @@ use Exception;
 
 class FavoriteUserController extends Controller
 {
-    public function getFavoriteUsersByUserId($request, $response)
+    public function getFavoriteUsersByUserId($request, $response, $args)
     {
         try {
-            $data = $request->getQueryParams();
-
             $favorite_users= FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
-                ->whereRaw('favorite_users.user_id = ?', [$data['user_id']])
+                ->whereRaw('favorite_users.user_id = ?', [$args['user_id']])
                 ->get(['favorite_users.*', 'favorite_user_categories.name']);
 
             $response->getBody()->write(json_encode($favorite_users));
@@ -35,6 +33,15 @@ class FavoriteUserController extends Controller
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
             return $response->withStatus($ex->getCode());
+        }
+    }
+
+    public function delete($request, $response, $args) {
+        try {
+            FavoriteUser::destroy($args['id']);
+            return $response;
+        } catch (Exception $ex) {
+            throw new Exception('Something went wrong while deleting data from database!',500);
         }
     }
 
