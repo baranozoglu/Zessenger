@@ -2,6 +2,11 @@
 namespace App\Controllers;
 
 use App\Auth\Auth;
+use App\Exception\CouldNotFoundMessageException;
+use App\Exception\DeleteDatabaseException;
+use App\Exception\FavoriteMessageException;
+use App\Exception\GetDatabaseException;
+use App\Exception\InsertDatabaseException;
 use App\Models\FavoriteMessage;
 use App\Models\Message;
 use Exception;

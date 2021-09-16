@@ -2,6 +2,9 @@
 namespace App\Controllers;
 
 use App\Auth\Auth;
+use App\Exception\DeleteDatabaseException;
+use App\Exception\GetDatabaseException;
+use App\Exception\InsertDatabaseException;
 use App\Models\FavoriteUserCategory;
 use Exception;
 

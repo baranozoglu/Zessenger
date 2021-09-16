@@ -3,6 +3,11 @@ namespace App\Controllers;
 
 use App\Auth\Auth;
 use App\Controllers\Auth\AuthController;
+use App\Exception\BlockedUserException;
+use App\Exception\CouldNotFoundUserException;
+use App\Exception\DeleteDatabaseException;
+use App\Exception\GetDatabaseException;
+use App\Exception\InsertDatabaseException;
 use App\Models\BlockedUser;
 use App\Models\Message;
 use App\Models\User;
@@ -64,7 +69,7 @@ class MessageController extends Controller
         }
     }
 
-    private function save($data) {
+    public function save($data) {
         try {
             return Message::updateOrCreate(['id' => $data['id']],
                 [
@@ -85,8 +90,6 @@ class MessageController extends Controller
 
     private function query($data) {
         try {
-            var_dump(json_encode($data['receiver_id']));
-            var_dump(json_encode($data['sender_id']));
             return Message::leftJoin('messages as m', 'messages.parent_message_id', '=', 'm.id')
                 ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
                 ->leftJoin('files', 'messages.file_id', '=', 'files.id')
@@ -97,4 +100,14 @@ class MessageController extends Controller
         }
     }
 
+    private function post($url, $data)
+    {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
 }

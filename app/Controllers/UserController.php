@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Exception\DeleteDatabaseException;
 use App\Models\User;
 use Exception;
 

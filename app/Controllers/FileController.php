@@ -2,6 +2,9 @@
 namespace App\Controllers;
 
 use App\Auth\Auth;
+use App\Exception\CouldNotUploadFileException;
+use App\Exception\GetDatabaseException;
+use App\Exception\InsertDatabaseException;
 use App\Models\File;
 use PHPUnit\Runner\Exception;
 use Psr\Http\Message\UploadedFileInterface;

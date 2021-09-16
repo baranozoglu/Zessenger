@@ -2,6 +2,10 @@
 namespace App\Controllers;
 
 use App\Auth\Auth;
+use App\Exception\CouldNotFoundUserException;
+use App\Exception\DeleteDatabaseException;
+use App\Exception\GetDatabaseException;
+use App\Exception\InsertDatabaseException;
 use App\Models\BlockedUser;
 use Exception;
 

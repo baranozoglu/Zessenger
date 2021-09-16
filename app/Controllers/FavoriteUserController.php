@@ -3,7 +3,11 @@ namespace App\Controllers;
 
 use App\Auth\Auth;
 use App\Exception\CouldNotFoundUserException;
+use App\Exception\CouldNotSendMessageException;
 use App\Exception\DeleteDatabaseException;
+use App\Exception\GetDatabaseException;
+use App\Exception\InsertDatabaseException;
+use App\Exception\UpdateDatabaseException;
 use App\Models\FavoriteUser;
 use App\Models\User;
 use App\Models\FavoriteUserCategory;
