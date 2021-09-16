@@ -41,14 +41,14 @@ class BlockedUserController extends Controller
             BlockedUser::destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while deleting data from database!',500);
+            throw new DeleteDatabaseException();
         }
     }
 
     private function validate($data) {
         $user = $this->getBlockedUserByUserId($data['blocked_user_id']);
         if(count($user) == 0) {
-            throw new Exception('Could not find user which you want to block!',404);
+            throw new CouldNotFoundUserException();
         }
     }
 
@@ -61,7 +61,7 @@ class BlockedUserController extends Controller
                 ]
             );
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while inserting data to database!',500);
+            throw new InsertDatabaseException();
         }
     }
 
@@ -69,7 +69,7 @@ class BlockedUserController extends Controller
         try {
             return BlockedUser::whereRaw('user_id = ? ', [$loggedUser['id']])->get();
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 }

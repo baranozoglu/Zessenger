@@ -21,7 +21,7 @@ class AuthMiddleware extends Middleware
         $response = $handler->handle($request);
         try {
             if(! $this->container->get('auth')->check()) {
-                throw new Exception("You have to login to access!",401);
+                throw new AuthException();
                 return $response;
             }
             return $response;

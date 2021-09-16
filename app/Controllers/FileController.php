@@ -36,7 +36,7 @@ class FileController extends Controller
                 $savedFile = $this->save($data, $filename);
                 $response->getBody()->write(json_encode($savedFile));
             } else {
-                throw new Exception('Could not upload file!', 400);
+                throw new CouldNotUploadFileException();
             }
 
             return $response;
@@ -68,7 +68,7 @@ class FileController extends Controller
                 ]
             );
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while inserting data to database!',500);
+            throw new InsertDatabaseException();
         }
     }
 
@@ -77,7 +77,7 @@ class FileController extends Controller
             return File::whereRaw('id = ? and ((sender_id = ? and receiver_id = ? ) or (sender_id = ? and receiver_id = ? ))', [$data['id'], $data['user_id'], $data['messaged_user_id'], $data['messaged_user_id'], $data['user_id']])
                 ->get();
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 

@@ -40,7 +40,7 @@ class FavoriteUserCategoryController extends Controller
             FavoriteUserCategory::destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while deleting data from database!',500);
+            throw new DeleteDatabaseException();
         }
     }
 
@@ -52,7 +52,7 @@ class FavoriteUserCategoryController extends Controller
                     'name' => $data['name'],
                 ]);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while inserting data to database!',500);
+            throw new InsertDatabaseException();
         }
     }
 
@@ -60,7 +60,7 @@ class FavoriteUserCategoryController extends Controller
         try {
             return FavoriteUserCategory::whereRaw('user_id = ? ', [$loggedUser['id']])->get();
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 }

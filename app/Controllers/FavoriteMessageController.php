@@ -42,21 +42,21 @@ class FavoriteMessageController extends Controller
             FavoriteMessage::destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while deleting data from database!',500);
+            throw new DeleteDatabaseException();
         }
     }
 
     private function validate($data) {
         $message = Message::whereRaw('id = ? ', [$data['message_id']])->get();
         if(count($message) == 0) {
-            throw new Exception('Could not find message which you want to add as favorite!',404);
+            throw new CouldNotFoundMessageException();
         }
     }
 
     private function save($data) {
         try {
             if($data['user_id'] != $data['sender_id'] && $data['user_id'] != $data['receiver_id'] ) {
-                throw new Exception('You can not add message which is not relative with you to your favorite messages!',400);
+                throw new FavoriteMessageException();
             }
             return FavoriteMessage::updateOrCreate(['id' => $data['id']],
                 [
@@ -67,7 +67,7 @@ class FavoriteMessageController extends Controller
                 ]
             );
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while inserting data to database!',500);
+            throw new InsertDatabaseException();
         }
     }
 
@@ -77,7 +77,7 @@ class FavoriteMessageController extends Controller
                 ->whereRaw('user_id = ? order by created_at', [$loggedUser['id']])
                 ->get(['favorite_messages.*','users.username as sender_name']);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 }

@@ -2,6 +2,8 @@
 namespace App\Controllers;
 
 use App\Auth\Auth;
+use App\Exception\CouldNotFoundUserException;
+use App\Exception\DeleteDatabaseException;
 use App\Models\FavoriteUser;
 use App\Models\User;
 use App\Models\FavoriteUserCategory;
@@ -43,19 +45,19 @@ class FavoriteUserController extends Controller
             FavoriteUser::destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while deleting data from database!',500);
+            throw new DeleteDatabaseException();
         }
     }
 
     private function validate($data) {
         $user = User::whereRaw('id = ? ', [$data['favorite_user_id']])->get();
         if(count($user) == 0) {
-            throw new Exception('Could not find user which you want to add as favorite!',404);
+            throw new CouldNotFoundUserException();
         }
 
         $favorite_user_category = FavoriteUserCategory::whereRaw('id = ? ', [$data['favorite_user_category_id']])->get();
         if(count($favorite_user_category) == 0) {
-            throw new Exception('Could not find favorite user category which you want to add favorite user!',404);
+            throw new CouldNotFoundUserException();
         }
     }
 
@@ -70,7 +72,7 @@ class FavoriteUserController extends Controller
                     'last_message_time' => $data['last_message_time'],
                 ]);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while inserting data to database!',500);
+            throw new InsertDatabaseException();
         }
     }
 
@@ -80,7 +82,7 @@ class FavoriteUserController extends Controller
                 ->whereRaw('favorite_users.user_id = ?', [$loggedUser['id']])
                 ->get(['favorite_users.*', 'favorite_user_categories.name']);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 
@@ -89,7 +91,7 @@ class FavoriteUserController extends Controller
             FavoriteUser::whereRaw('id in (?)', [$id_list])
                 ->update(['last_message_time' => date('Y-m-d H:i:s')]);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while updating last message time on database!',500);
+            throw new UpdateDatabaseException();
         }
     }
 
@@ -99,7 +101,7 @@ class FavoriteUserController extends Controller
                 ->get('id');
             return self::converter($obj_list);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 
@@ -114,7 +116,7 @@ class FavoriteUserController extends Controller
             }
             return $id_list;
         } catch (Exception $ex) {
-            throw new Exception('Could not send message to user who is not in your favorite user list!',400);
+            throw new CouldNotSendMessageException();
         }
     }
 }

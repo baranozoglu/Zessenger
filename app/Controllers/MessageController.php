@@ -48,19 +48,19 @@ class MessageController extends Controller
             Message::destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while deleting data from database!',500);
+            throw new DeleteDatabaseException();
         }
     }
 
     public function validate($data) {
         $receiver_user = User::whereRaw('id = ? ', [$data['receiver_id']])->get();
         if(count($receiver_user) == 0) {
-            throw new Exception('Could not find user which you want to send message!',404);
+            throw new CouldNotFoundUserException();
         }
 
         $is_user_blockedBy_receiver_user = BlockedUser::whereRaw('user_id = ? and blocked_user_id = ? ', [$data['receiver_id'], $data['sender_id']])->get();
         if(count($is_user_blockedBy_receiver_user) != 0) {
-            throw new Exception('You have blocked by user which you want to send message!',400);
+            throw new BlockedUserException();
         }
     }
 
@@ -79,7 +79,7 @@ class MessageController extends Controller
                 ]
             );
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while inserting data to database!',500);
+            throw new InsertDatabaseException();
         }
     }
 
@@ -93,7 +93,7 @@ class MessageController extends Controller
                 ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$data['user_id'], $data['messaged_user_id'], $data['messaged_user_id'], $data['user_id']])
                 ->get(['messages.*', 'm.text as parent_message_text', 'users.username as sender_name', 'files.id']);
         } catch (Exception $ex) {
-            throw new Exception('Something went wrong while getting data from database!',500);
+            throw new GetDatabaseException();
         }
     }
 
