@@ -1,15 +1,17 @@
 <?php
 namespace App\Controllers;
 
+use App\Auth\Auth;
 use App\Models\FavoriteUserCategory;
 use Exception;
 
 class FavoriteUserCategoryController extends Controller
 {
-    public function getFavoriteUserCategoriesByUserId($request, $response, $args)
+    public function getFavoriteUserCategoriesByUserId($request, $response)
     {
         try {
-            $blacklist = $this->query($args);
+            $loggedUser = Auth::user();
+            $blacklist = $this->query($loggedUser);
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
@@ -21,7 +23,9 @@ class FavoriteUserCategoryController extends Controller
     public function addFavoriteUserCategory($request, $response)
     {
         try {
+            $loggedUser = Auth::user();
             $data = $request->getParsedBody();
+            $data['user_id'] = $loggedUser['id'];
             $favorite_user_category = $this->save($data);
             $response->getBody()->write(json_encode($favorite_user_category));
             return $response;
@@ -52,9 +56,9 @@ class FavoriteUserCategoryController extends Controller
         }
     }
 
-    private function query($args) {
+    private function query($loggedUser) {
         try {
-            return FavoriteUserCategory::whereRaw('user_id = ? ', [$args['user_id']])->get();
+            return FavoriteUserCategory::whereRaw('user_id = ? ', [$loggedUser['id']])->get();
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);
         }

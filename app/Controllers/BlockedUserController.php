@@ -1,15 +1,17 @@
 <?php
 namespace App\Controllers;
 
+use App\Auth\Auth;
 use App\Models\BlockedUser;
 use Exception;
 
 class BlockedUserController extends Controller
 {
-    public function getBlockedUserByUserId($request, $response, $args)
+    public function getBlockedUserByUserId($request, $response)
     {
         try {
-            $blacklist = $this->query($args);
+            $loggedUser = Auth::user();
+            $blacklist = $this->query($loggedUser);
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
@@ -21,7 +23,9 @@ class BlockedUserController extends Controller
     public function addBlockedUser($request, $response)
     {
         try {
+            $loggedUser = Auth::user();
             $data = $request->getParsedBody();
+            $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
             $blocked_user = $this->save($data);
             $response->getBody()->write(json_encode($blocked_user));
@@ -61,9 +65,9 @@ class BlockedUserController extends Controller
         }
     }
 
-    private function query($args) {
+    private function query($loggedUser) {
         try {
-            return BlockedUser::whereRaw('user_id = ? ', [$args['user_id']])->get();
+            return BlockedUser::whereRaw('user_id = ? ', [$loggedUser['id']])->get();
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);
         }

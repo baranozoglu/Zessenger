@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Auth\Auth;
 use App\Models\File;
 use PHPUnit\Runner\Exception;
 use Psr\Http\Message\UploadedFileInterface;
@@ -10,7 +11,9 @@ class FileController extends Controller
     public function getFile($request, $response)
     {
         try {
+            $loggedUser = Auth::user();
             $data = $request->getQueryParams();
+            $data['user_id'] = $loggedUser['id'];
             $file = $this->query($data);
             $response->getBody()->write(json_encode($file));
             return $response;
@@ -71,7 +74,7 @@ class FileController extends Controller
 
     private function query($data) {
         try {
-            return File::whereRaw('id = ? and ((sender_id = ? and receiver_id = ? ) or (sender_id = ? and receiver_id = ? ))', [$data['id'], $data['sender_id'], $data['receiver_id'], $data['receiver_id'], $data['sender_id']])
+            return File::whereRaw('id = ? and ((sender_id = ? and receiver_id = ? ) or (sender_id = ? and receiver_id = ? ))', [$data['id'], $data['user_id'], $data['messaged_user_id'], $data['messaged_user_id'], $data['user_id']])
                 ->get();
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);

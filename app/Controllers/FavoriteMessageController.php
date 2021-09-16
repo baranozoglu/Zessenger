@@ -1,16 +1,18 @@
 <?php
 namespace App\Controllers;
 
+use App\Auth\Auth;
 use App\Models\FavoriteMessage;
 use App\Models\Message;
 use Exception;
 
 class FavoriteMessageController extends Controller
 {
-    public function getFavoriteMessagesBySenderAndReceiver($request, $response, $args)
+    public function getFavoriteMessagesBySenderAndReceiver($request, $response)
     {
         try {
-            $favorite_messages = $this->query($args);
+            $loggedUser = Auth::user();
+            $favorite_messages = $this->query($loggedUser);
             $response->getBody()->write(json_encode($favorite_messages));
             return $response;
         } catch (Exception $ex) {
@@ -22,7 +24,9 @@ class FavoriteMessageController extends Controller
     public function addFavoriteMessage($request, $response)
     {
         try {
+            $loggedUser = Auth::user();
             $data = $request->getParsedBody();
+            $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
             $favorite_message = $this->save($data);
             $response->getBody()->write(json_encode($favorite_message));
@@ -51,6 +55,9 @@ class FavoriteMessageController extends Controller
 
     private function save($data) {
         try {
+            if($data['user_id'] != $data['sender_id'] && $data['user_id'] != $data['receiver_id'] ) {
+                throw new Exception('You can not add message which is not relative with you to your favorite messages!',400);
+            }
             return FavoriteMessage::updateOrCreate(['id' => $data['id']],
                 [
                     'message_id' => $data['message_id'],
@@ -64,10 +71,10 @@ class FavoriteMessageController extends Controller
         }
     }
 
-    private function query($args) {
+    private function query($loggedUser) {
         try {
             return FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
-                ->whereRaw('user_id = ? order by created_at', [$args['user_id']])
+                ->whereRaw('user_id = ? order by created_at', [$loggedUser['id']])
                 ->get(['favorite_messages.*','users.username as sender_name']);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);

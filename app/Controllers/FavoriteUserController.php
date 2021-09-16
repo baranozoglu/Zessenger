@@ -1,18 +1,19 @@
 <?php
 namespace App\Controllers;
 
+use App\Auth\Auth;
 use App\Models\FavoriteUser;
 use App\Models\User;
 use App\Models\FavoriteUserCategory;
-use DateTime;
 use Exception;
 
 class FavoriteUserController extends Controller
 {
-    public function getFavoriteUsersByUserId($request, $response, $args)
+    public function getFavoriteUsersByUserId($request, $response)
     {
         try {
-            $favorite_users = $this->query($args);
+            $loggedUser = Auth::user();
+            $favorite_users = $this->query($loggedUser);
             $response->getBody()->write(json_encode($favorite_users));
             return $response;
         } catch (Exception $ex) {
@@ -24,7 +25,9 @@ class FavoriteUserController extends Controller
     public function addFavoriteUser($request, $response)
     {
         try {
+            $loggedUser = Auth::user();
             $data = $request->getParsedBody();
+            $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
             $favorite_user = $this->save($data);
             $response->getBody()->write(json_encode($favorite_user));
@@ -71,10 +74,10 @@ class FavoriteUserController extends Controller
         }
     }
 
-    public function query($args) {
+    public function query($loggedUser) {
         try {
             return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
-                ->whereRaw('favorite_users.user_id = ?', [$args['user_id']])
+                ->whereRaw('favorite_users.user_id = ?', [$loggedUser['id']])
                 ->get(['favorite_users.*', 'favorite_user_categories.name']);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);
@@ -94,7 +97,7 @@ class FavoriteUserController extends Controller
         try {
             $obj_list = FavoriteUser::whereRaw('favorite_user_id = ? or user_id = ?', [$data['sender_id'], $data['sender_id']])
                 ->get('id');
-            return $this->converter($obj_list);
+            return self::converter($obj_list);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);
         }

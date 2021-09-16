@@ -74,7 +74,7 @@ CREATE TABLE favorite_users (
                                 id INTEGER PRIMARY KEY,
                                 favorite_user_id INTEGER NOT NULL,
                                 user_id INTEGER NOT NULL,
-                                favorite_user_category_id INTEGER NOT NULL,
+                                favorite_user_category_id INTEGER,
                                 nickname TEXT,
                                 last_message_time DATETIME,
                                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

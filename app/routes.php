@@ -30,35 +30,35 @@ $app->group('/messages', function ($group) {
     $group->post('', MessageController::class . ':addMessage');
     $group->put('', MessageController::class . ':addMessage');
     $group->delete('/{id}', MessageController::class . ':delete');
-});
+})->add(new AuthMiddleware($container));
 
 $app->group('/blocked-users', function ($group) {
-    $group->get('/{user_id}', BlockedUserController::class . ':getBlockedUserByUserId');
+    $group->get('', BlockedUserController::class . ':getBlockedUserByUserId');
     $group->post('', BlockedUserController::class . ':addBlockedUser');
     $group->put('', BlockedUserController::class . ':addBlockedUser');
     $group->delete('/{id}', BlockedUserController::class . ':delete');
-});
+})->add(new AuthMiddleware($container));
 
 $app->group('/favorite-messages', function ($group) {
-    $group->get('/{user_id}', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
+    $group->get('', FavoriteMessageController::class . ':getFavoriteMessagesBySenderAndReceiver');
     $group->post('', FavoriteMessageController::class . ':addFavoriteMessage');
     $group->put('', FavoriteMessageController::class . ':addFavoriteMessage');
     $group->delete('/{id}', FavoriteMessageController::class . ':delete');
-});
+})->add(new AuthMiddleware($container));
 
 $app->group('/favorite-user-categories', function ($group) {
-    $group->get('/{user_id}', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
+    $group->get('', FavoriteUserCategoryController::class . ':getFavoriteUserCategoriesByUserId');
     $group->post('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
     $group->put('', FavoriteUserCategoryController::class . ':addFavoriteUserCategory');
     $group->delete('/{id}', FavoriteUserCategoryController::class . ':delete');
-});
+})->add(new AuthMiddleware($container));
 
 $app->group('/favorite-users', function ($group) {
-    $group->get('/{user_id}', FavoriteUserController::class . ':getFavoriteUsersByUserId');
+    $group->get('', FavoriteUserController::class . ':getFavoriteUsersByUserId');
     $group->post('', FavoriteUserController::class . ':addFavoriteUser');
     $group->put('', FavoriteUserController::class . ':addFavoriteUser');
     $group->delete('/{id}', FavoriteUserController::class . ':delete');
-});
+})->add(new AuthMiddleware($container));
 
 $app->group('/logins', function ($group) {
     $group->get('/{user_id}', LoginController::class . ':getLoginsByUserId');
@@ -70,7 +70,7 @@ $app->group('/logins', function ($group) {
 $app->group('/files', function ($group) {
     $group->get('', FileController::class . ':getFile');
     $group->post('', FileController::class . ':fileUpload');
-});
+})->add(new AuthMiddleware($container));
 
 $app->group('/auth', function ($group) {
 	$group->get('/signout', AuthController::class . ':getSignOut');

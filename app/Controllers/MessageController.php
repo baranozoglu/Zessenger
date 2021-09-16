@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+use App\Auth\Auth;
+use App\Controllers\Auth\AuthController;
 use App\Models\BlockedUser;
 use App\Models\Message;
 use App\Models\User;
@@ -11,7 +13,9 @@ class MessageController extends Controller
     public function getMessagesBySenderAndReceiver($request, $response)
     {
         try {
-            $data = $request->getParsedBody();
+            $loggedUser = Auth::user();
+            $data = $request->getQueryParams();
+            $data['user_id'] = $loggedUser['id'];
             $messages = $this->query($data);
             $response->getBody()->write(json_encode($messages));
             return $response;
@@ -81,10 +85,12 @@ class MessageController extends Controller
 
     private function query($data) {
         try {
+            var_dump(json_encode($data['receiver_id']));
+            var_dump(json_encode($data['sender_id']));
             return Message::leftJoin('messages as m', 'messages.parent_message_id', '=', 'm.id')
                 ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
                 ->leftJoin('files', 'messages.file_id', '=', 'files.id')
-                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$data['sender_id'], $data['receiver_id'], $data['receiver_id'], $data['sender_id']])
+                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$data['user_id'], $data['messaged_user_id'], $data['messaged_user_id'], $data['user_id']])
                 ->get(['messages.*', 'm.text as parent_message_text', 'users.username as sender_name', 'files.id']);
         } catch (Exception $ex) {
             throw new Exception('Something went wrong while getting data from database!',500);

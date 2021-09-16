@@ -10,37 +10,37 @@ class AuthController extends Controller
 	public function getSignOut($request, $response)
 	{
 		$this->auth->logout();
-		return null;
+		return $response;
 	}
 
 	public function getSignIn($request, $response)
 	{
-		return null;
+		return $response;
 	}
 
 	public function postSignIn($request, $response)
 	{
 		$data = $request->getParsedBody();
 		$auth = $this->auth->attempt(
-			$data['email'],
+			$data['username'],
 			$data['password']
 		);
-
+        $user = $this->auth->user();
 		if (! $auth) {
-			$this->flash->addMessage('error', 'Could not sign you in with those details');
-			return $response->withHeader('Location', $this->router->urlFor('auth.signin'));
+            $response->getBody()->write(json_encode("faaiiilll"));
+            return $response;
 		}
 
         Login::create([
-            'user_id' => $data['user_id'],
+            'user_id' => $user['id'],
         ]);
 
-		return null;
+		return $response;
 	}
 
 	public function getSignUp($request, $response)
 	{
-		return null;
+		return $response;
 	}
 
 	public function postSignUp($request, $response)
