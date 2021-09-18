@@ -11,6 +11,7 @@ use App\Exception\InsertDatabaseException;
 use App\Models\BlockedUser;
 use App\Models\Message;
 use App\Models\User;
+use App\WebSocket\Chat;
 use Exception;
 
 class MessageController extends Controller

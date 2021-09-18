@@ -17,7 +17,8 @@
         "slim/csrf": "^1.0.0",
         "vlucas/phpdotenv": "^2.4",
         "php-di/php-di": "^6.2",
-        "slim/psr7": "^1.1"
+        "slim/psr7": "^1.1",
+        "cboden/ratchet": "^0.4"
     },
     "autoload": {
     	"psr-4": {
