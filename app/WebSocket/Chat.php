@@ -21,9 +21,10 @@ class Chat implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $numRecv = count($this->clients) - 1;
-        echo "from->>>".json_encode($from);
+        echo "from->>>".json_encode($msg);
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
+        echo "clients->>>".json_encode($this->clients);
 
         foreach ($this->clients as $client) {
             if ($from !== $client) {
