@@ -28,19 +28,6 @@ class Message extends Model
     ];
 
     /**
-     * Message constructor.
-     * @param $text
-     * @param $sender_id
-     * @param $receiver_id
-     */
-    public function __construct($text, $sender_id, $receiver_id)
-    {
-        $this->text = $text;
-        $this->sender_id = $sender_id;
-        $this->receiver_id = $receiver_id;
-    }
-
-    /**
      * @return mixed
      */
     public function getText()

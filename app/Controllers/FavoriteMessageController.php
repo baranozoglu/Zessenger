@@ -9,8 +9,11 @@ use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Models\FavoriteMessage;
 use App\Models\Message;
+use App\Repository\FavoriteMessageRepository;
+use App\Repository\MessageRepository;
 use Exception;
 
+$favoriteMessageRepository = new FavoriteMessageRepository();
 class FavoriteMessageController extends Controller
 {
     public function getFavoriteMessagesBySenderAndReceiver($request, $response)
@@ -21,7 +24,7 @@ class FavoriteMessageController extends Controller
             $response->getBody()->write(json_encode($favorite_messages));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
@@ -37,14 +40,15 @@ class FavoriteMessageController extends Controller
             $response->getBody()->write(json_encode($favorite_message));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
 
     public function delete($request, $response, $args) {
+        global $favoriteMessageRepository;
         try {
-            FavoriteMessage::destroy($args['id']);
+            $favoriteMessageRepository->destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
             throw new DeleteDatabaseException();
@@ -52,35 +56,29 @@ class FavoriteMessageController extends Controller
     }
 
     private function validate($data) {
-        $message = Message::whereRaw('id = ? ', [$data['message_id']])->get();
+        $messageRepository = new MessageRepository();
+        $message = $messageRepository->getMessageById($data['message_id']);
         if(count($message) == 0) {
             throw new CouldNotFoundMessageException();
         }
     }
 
     private function save($data) {
+        global $favoriteMessageRepository;
         try {
-            if($data['user_id'] != $data['sender_id'] && $data['user_id'] != $data['receiver_id'] ) {
+            if($data['user_id'] != $data['owner_id'] && $data['owner_id'] != $data['messaged_user_id'] ) {
                 throw new FavoriteMessageException();
             }
-            return FavoriteMessage::updateOrCreate(['id' => $data['id']],
-                [
-                    'message_id' => $data['message_id'],
-                    'user_id' => $data['user_id'],
-                    'sender_id' => $data['sender_id'],
-                    'receiver_id' => $data['receiver_id'],
-                ]
-            );
+            return $favoriteMessageRepository->save($data);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
         }
     }
 
     private function query($loggedUser) {
+        global $favoriteMessageRepository;
         try {
-            return FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
-                ->whereRaw('user_id = ? order by created_at', [$loggedUser['id']])
-                ->get(['favorite_messages.*','users.username as sender_name']);
+            return $favoriteMessageRepository->getFavoriteMessages($loggedUser['id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

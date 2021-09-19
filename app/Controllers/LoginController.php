@@ -2,20 +2,25 @@
 namespace App\Controllers;
 
 use App\Exception\DeleteDatabaseException;
+use App\Exception\InsertDatabaseException;
 use App\Models\Login;
 use App\Models\Message;
+use App\Repository\LoginRepository;
 use Exception;
+
+$loginRepository = new LoginRepository();
 
 class LoginController extends Controller
 {
     public function getLoginsByUserId($request, $response, $args)
     {
         try {
-            $favorite_users = Login::whereRaw('user_id = ?', [$args['user_id']])->get();
+            $loginRepository = new LoginRepository();
+            $favorite_users = $loginRepository->getLoginsByUserId($args['user_id']);
             $response->getBody()->write(json_encode($favorite_users));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
@@ -24,22 +29,28 @@ class LoginController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-
-            $favorite_user = Login::create([
-                'user_id' => $data['user_id'],
-            ]);
-
+            $favorite_user = $this->save($data['user_id']);
             $response->getBody()->write(json_encode($favorite_user));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
 
-    public function delete($request, $response, $args) {
+    public function save($data) {
+        global $loginRepository;
         try {
-            Login::destroy($args['id']);
+            return $loginRepository->save($data);
+        } catch (Exception $ex) {
+            throw new InsertDatabaseException();
+        }
+    }
+
+    public function delete($request, $response, $args) {
+        global $loginRepository;
+        try {
+            $loginRepository->destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
             throw new DeleteDatabaseException();

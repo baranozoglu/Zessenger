@@ -25,15 +25,15 @@ CREATE TABLE messages (
                           status_for_sender BOOLEAN DEFAULT true,
                           status_for_receiver BOOLEAN DEFAULT true,
                           isEdited BOOLEAN DEFAULT false,
-                          sender_id INTEGER NOT NULL,
-                          receiver_id INTEGER NOT NULL,
+                          user_id INTEGER NOT NULL,
+                          messaged_user_id INTEGER NOT NULL,
                           parent_message_id INTEGER,
                           file_id INTEGER,
                           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           updated_at DATETIME,
-                          FOREIGN KEY (sender_id)
+                          FOREIGN KEY (user_id)
                               REFERENCES users (id),
-                          FOREIGN KEY (receiver_id)
+                          FOREIGN KEY (messaged_user_id)
                               REFERENCES users (id),
                           FOREIGN KEY (parent_message_id)
                               REFERENCES messages (id)
@@ -90,16 +90,16 @@ CREATE TABLE favorite_users (
 CREATE TABLE favorite_messages (
                                    id INTEGER PRIMARY KEY,
                                    message_id INTEGER NOT NULL,
+                                   owner_id INTEGER NOT NULL,
                                    user_id INTEGER NOT NULL,
-                                   sender_id INTEGER NOT NULL,
-                                   receiver_id INTEGER NOT NULL,
+                                   messaged_user_id INTEGER NOT NULL,
                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                    updated_at DATETIME,
+                                   FOREIGN KEY (owner_id)
+                                       REFERENCES users (id),
                                    FOREIGN KEY (user_id)
                                        REFERENCES users (id),
-                                   FOREIGN KEY (sender_id)
-                                       REFERENCES users (id),
-                                   FOREIGN KEY (receiver_id)
+                                   FOREIGN KEY (messaged_user_id)
                                        REFERENCES users (id),
                                    FOREIGN KEY (message_id)
                                        REFERENCES messages (id)
@@ -108,18 +108,18 @@ CREATE TABLE favorite_messages (
 CREATE TABLE files (
                                    id INTEGER PRIMARY KEY,
                                    filename TEXT NOT NULL,
-                                   sender_id INTEGER NOT NULL,
-                                   receiver_id INTEGER NOT NULL,
+                                   user_id INTEGER NOT NULL,
+                                   messaged_user_id INTEGER NOT NULL,
                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                    updated_at DATETIME,
-                                   FOREIGN KEY (sender_id)
+                                   FOREIGN KEY (user_id)
                                        REFERENCES users (id),
-                                   FOREIGN KEY (receiver_id)
+                                   FOREIGN KEY (messaged_user_id)
                                        REFERENCES users (id)
 );
 
 INSERT INTO "users" ("id", "first_name", "last_name", "email", "phone", "password", "username", "photo_url", "created_at", "updated_at") VALUES
-('1', 'baran', 'ozoglu', 'baran@asd.com', '14353453453', 'admin', 'baranozoglu', '', NULL, NULL);
+('1', 'baran', 'ozoglu', 'baran@asd.com', '14353453453', '$2y$10$dBEg2P6mpMe9NpypTRld/uaop.pevAW44Bs9eiFrF.MKl82b0xCBu', 'baranozoglu', '', NULL, NULL);
 
 INSERT INTO "users" ("id", "first_name", "last_name", "email", "phone", "password", "username", "photo_url", "created_at", "updated_at") VALUES
-('2', 'hakan', 'ozoglu', 'hakan@asd.com', '24353453453', 'admin', 'hakanozoglu', '', NULL, NULL);
+('2', 'hakan', 'ozoglu', 'hakan@asd.com', '24353453453', '$2y$10$dBEg2P6mpMe9NpypTRld/uaop.pevAW44Bs9eiFrF.MKl82b0xCBu', 'hakanozoglu', '', NULL, NULL);

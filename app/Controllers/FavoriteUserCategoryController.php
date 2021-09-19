@@ -6,8 +6,10 @@ use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Models\FavoriteUserCategory;
+use App\Repository\FavoriteUserCategoryRepository;
 use Exception;
 
+$favoriteUserCategoryRepository = new FavoriteUserCategoryRepository();
 class FavoriteUserCategoryController extends Controller
 {
     public function getFavoriteUserCategoriesByUserId($request, $response)
@@ -18,7 +20,7 @@ class FavoriteUserCategoryController extends Controller
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
@@ -33,14 +35,15 @@ class FavoriteUserCategoryController extends Controller
             $response->getBody()->write(json_encode($favorite_user_category));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
 
     public function delete($request, $response, $args) {
+        global $favoriteUserCategoryRepository;
         try {
-            FavoriteUserCategory::destroy($args['id']);
+            $favoriteUserCategoryRepository->destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
             throw new DeleteDatabaseException();
@@ -48,20 +51,18 @@ class FavoriteUserCategoryController extends Controller
     }
 
     private function save($data) {
+        global $favoriteUserCategoryRepository;
         try {
-            return FavoriteUserCategory::updateOrCreate(['id' => $data['id']],
-                [
-                    'user_id' => $data['user_id'],
-                    'name' => $data['name'],
-                ]);
+            return $favoriteUserCategoryRepository->save($data);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
         }
     }
 
     private function query($loggedUser) {
+        global $favoriteUserCategoryRepository;
         try {
-            return FavoriteUserCategory::whereRaw('user_id = ? ', [$loggedUser['id']])->get();
+            return $favoriteUserCategoryRepository->getFavoriteUserCategories($loggedUser['id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

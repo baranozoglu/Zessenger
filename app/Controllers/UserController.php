@@ -19,7 +19,7 @@ class UserController extends Controller
             $response->getBody()->write(json_encode($users));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }

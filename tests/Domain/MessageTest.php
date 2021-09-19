@@ -27,11 +27,15 @@ class MessageTest extends PHPUnit_TestCase
      */
     public function testGetters(string $text, int $sender_id,  int $receiver_id)
     {
-        $message = new Message($text, $sender_id, $receiver_id);
+        $message = [
+            "text" => $text,
+            "sender_id" => $sender_id,
+            "receiver_id" => $receiver_id
+        ];
 
-        $this->assertEquals($text, $message->getText());
-        $this->assertEquals($sender_id, $message->getSenderId());
-        $this->assertEquals($receiver_id, $message->getReceiverId());
+        $this->assertEquals($text, $message['text']);
+        $this->assertEquals($sender_id, $message['sender_id']);
+        $this->assertEquals($receiver_id, $message['receiver_id']);
     }
     
 }

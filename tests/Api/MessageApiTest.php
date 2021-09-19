@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Infrastructure\Persistence;
+namespace Tests\Api;
 
 use App\Controllers\UserController;
 use App\Exception\DeleteDatabaseException;
@@ -11,9 +11,9 @@ use Slim\Psr7\Request as SlimRequest;
 use Slim\Psr7\Uri;
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 
-require __DIR__ . '/../../../bootstrap/app.php';
+require __DIR__ . '/../../bootstrap/app.php';
 
-class UserApiTest extends PHPUnit_TestCase
+class MessageApiTest extends PHPUnit_TestCase
 {
     private $app;
     public function setUp()
@@ -22,31 +22,29 @@ class UserApiTest extends PHPUnit_TestCase
         $this->app = $app;
     }
 
-    public function userProvider()
+    public function messageProvider()
     {
         return [
-            ['Baran', 'Ozoglu', 'baranozoglu', 'admin'],
-            ['Hakan', 'Ozoglu', 'hakanozoglu', 'admin'],
-            ['Akif', 'Ozoglu', 'akifozoglu', 'admin'],
+            ['Baran Hi how are you today?', 2, 1],
+            ['Hakan, thank you very much I am great', 1, 2],
         ];
     }
 
     /**
      * @dataProvider userProvider
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $username
-     * @param string $password
+     * @param string $text
+     * @param string $sender_id
+     * @param string $receiver_id
      */
-    public function testFindAll(string $firstName, string $lastName, string $username, string $password)
+    public function testFindAll(string $text, int $sender_id, int $receiver_id)
     {
-        $user = [
-            "first_name" => $firstName,
-            "last_name" => $lastName,
-            "username" => $username
+        $message = [
+            "text" => $text,
+            "sender_id" => $sender_id,
+            "receiver_id" => $receiver_id
         ];
         $this->createMock(UserRepository::class)
-            ->method('getAll')->willReturn($user);
+            ->method('getAll')->willReturn($message);
 
         $request = $this->createRequest('GET','/users');
         $response = $this->app->handle($request);

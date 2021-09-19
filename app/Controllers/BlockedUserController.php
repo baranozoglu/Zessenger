@@ -7,6 +7,7 @@ use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Models\BlockedUser;
+use App\Repository\BlockedUserRepository;
 use Exception;
 
 class BlockedUserController extends Controller
@@ -19,7 +20,7 @@ class BlockedUserController extends Controller
             $response->getBody()->write(json_encode($blacklist));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
@@ -35,7 +36,7 @@ class BlockedUserController extends Controller
             $response->getBody()->write(json_encode($blocked_user));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
@@ -58,20 +59,17 @@ class BlockedUserController extends Controller
 
     private function save($data) {
         try {
-            return BlockedUser::updateOrCreate(['id' => $data['id']],
-                [
-                    'user_id' => $data['user_id'],
-                    'blocked_user_id' => $data['blocked_user_id'],
-                ]
-            );
+            $blockedUserRepository = new BlockedUserRepository();
+            return $blockedUserRepository->save($data);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
         }
     }
 
-    private function query($loggedUser) {
+    private function query($data) {
         try {
-            return BlockedUser::whereRaw('user_id = ? ', [$loggedUser['id']])->get();
+            $blockedUserRepository = new BlockedUserRepository();
+            return $blockedUserRepository->getUserById($data['id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

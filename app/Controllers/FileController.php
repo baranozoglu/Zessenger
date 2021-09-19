@@ -6,6 +6,7 @@ use App\Exception\CouldNotUploadFileException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Models\File;
+use App\Repository\FileRepository;
 use PHPUnit\Runner\Exception;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -21,7 +22,7 @@ class FileController extends Controller
             $response->getBody()->write(json_encode($file));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response;
         }
     }
@@ -63,13 +64,8 @@ class FileController extends Controller
 
     private function save($data, $filename) {
         try {
-            return File::updateOrCreate(['id' => $data['id']],
-                [
-                    'filename' => $filename,
-                    'sender_id' => $data['sender_id'],
-                    'receiver_id' => $data['receiver_id'],
-                ]
-            );
+            $fileRepository = new FileRepository();
+            return $fileRepository->save($data,$filename);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
         }
@@ -77,8 +73,8 @@ class FileController extends Controller
 
     private function query($data) {
         try {
-            return File::whereRaw('id = ? and ((sender_id = ? and receiver_id = ? ) or (sender_id = ? and receiver_id = ? ))', [$data['id'], $data['user_id'], $data['messaged_user_id'], $data['messaged_user_id'], $data['user_id']])
-                ->get();
+            $fileRepository = new FileRepository();
+            return $fileRepository->getLoginsByUserId($data['id'], $data['user_id'], $data['messaged_user_id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

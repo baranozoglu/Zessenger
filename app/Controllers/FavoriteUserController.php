@@ -8,10 +8,13 @@ use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Exception\UpdateDatabaseException;
-use App\Models\FavoriteUser;
-use App\Models\User;
 use App\Models\FavoriteUserCategory;
+use App\Repository\FavoriteUserCategoryRepository;
+use App\Repository\FavoriteUserRepository;
+use App\Repository\UserRepository;
 use Exception;
+
+$favoriteUserRepository = new FavoriteUserRepository();
 
 class FavoriteUserController extends Controller
 {
@@ -23,7 +26,7 @@ class FavoriteUserController extends Controller
             $response->getBody()->write(json_encode($favorite_users));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
@@ -39,14 +42,15 @@ class FavoriteUserController extends Controller
             $response->getBody()->write(json_encode($favorite_user));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
 
     public function delete($request, $response, $args) {
+        global $favoriteUserRepository;
         try {
-            FavoriteUser::destroy($args['id']);
+            $favoriteUserRepository->destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
             throw new DeleteDatabaseException();
@@ -54,55 +58,49 @@ class FavoriteUserController extends Controller
     }
 
     private function validate($data) {
-        $user = User::whereRaw('id = ? ', [$data['favorite_user_id']])->get();
+        $userRepository = new UserRepository();
+        $user = $userRepository->getUserById($data['favorite_user_id']);
         if(count($user) == 0) {
             throw new CouldNotFoundUserException();
         }
-
-        $favorite_user_category = FavoriteUserCategory::whereRaw('id = ? ', [$data['favorite_user_category_id']])->get();
+        $favoriteUserCategoryRepository = new FavoriteUserCategoryRepository();
+        $favorite_user_category = $favoriteUserCategoryRepository->getFavoriteUserCategoryById($data['favorite_user_category_id']);
         if(count($favorite_user_category) == 0) {
             throw new CouldNotFoundUserException();
         }
     }
 
     private function save($data) {
+        global $favoriteUserRepository;
         try {
-            return FavoriteUser::updateOrCreate(['id' => $data['id']],
-                [
-                    'user_id' => $data['user_id'],
-                    'favorite_user_category_id' => $data['favorite_user_category_id'],
-                    'favorite_user_id' => $data['favorite_user_id'],
-                    'nickname' => $data['nickname'],
-                    'last_message_time' => $data['last_message_time'],
-                ]);
+            return $favoriteUserRepository->save($data);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
         }
     }
 
     public function query($loggedUser) {
+        global $favoriteUserRepository;
         try {
-            return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
-                ->whereRaw('favorite_users.user_id = ?', [$loggedUser['id']])
-                ->get(['favorite_users.*', 'favorite_user_categories.name']);
+            return $favoriteUserRepository->getFavoriteUsers($loggedUser['id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }
     }
 
     public function updateLastMessageTime($id_list) {
+        global $favoriteUserRepository;
         try {
-            FavoriteUser::whereRaw('id in (?)', [$id_list])
-                ->update(['last_message_time' => date('Y-m-d H:i:s')]);
+            return $favoriteUserRepository->updateLastMessageTime($id_list);
         } catch (Exception $ex) {
             throw new UpdateDatabaseException();
         }
     }
 
     public function findFavoriteUserIdList($data) {
+        global $favoriteUserRepository;
         try {
-            $obj_list = FavoriteUser::whereRaw('favorite_user_id = ? or user_id = ?', [$data['sender_id'], $data['sender_id']])
-                ->get('id');
+            $obj_list = $favoriteUserRepository->findFavoriteUserIdList($data['user_id']);
             return self::converter($obj_list);
         } catch (Exception $ex) {
             throw new GetDatabaseException();

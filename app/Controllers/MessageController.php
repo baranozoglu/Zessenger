@@ -11,8 +11,12 @@ use App\Exception\InsertDatabaseException;
 use App\Models\BlockedUser;
 use App\Models\Message;
 use App\Models\User;
+use App\Repository\BlockedUserRepository;
+use App\Repository\UserRepository;
 use App\WebSocket\Chat;
 use Exception;
+
+$messageRepository = new MessageRepository();
 
 class MessageController extends Controller
 {
@@ -26,7 +30,7 @@ class MessageController extends Controller
             $response->getBody()->write(json_encode($messages));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response;
         }
     }
@@ -36,7 +40,7 @@ class MessageController extends Controller
         try {
             $loggedUser = Auth::user();
             $data = $request->getParsedBody();
-            $data['sender_id'] = $loggedUser['id'];
+            $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
             $message = $this->save($data);
 
@@ -46,14 +50,15 @@ class MessageController extends Controller
             $response->getBody()->write(json_encode($message));
             return $response;
         } catch (Exception $ex) {
-            $response->getBody()->write(json_encode('errorMessage: '.$ex->getMessage()));
+            $response->getBody()->write(json_encode($ex->getMessage()));
             return $response->withStatus($ex->getCode());
         }
     }
 
     public function delete($request, $response, $args) {
+        global $messageRepository;
         try {
-            Message::destroy($args['id']);
+            $messageRepository->destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
             throw new DeleteDatabaseException();
@@ -61,49 +66,39 @@ class MessageController extends Controller
     }
 
     public function validate($data) {
-        $receiver_user = User::whereRaw('id = ? ', [$data['receiver_id']])->get();
+        $userRepository = new UserRepository();
+        $receiver_user = $userRepository->getUserById([$data['receiver_id']]);
         if(count($receiver_user) == 0) {
             throw new CouldNotFoundUserException();
         }
 
-        $is_user_blockedBy_receiver_user = BlockedUser::whereRaw('user_id = ? and blocked_user_id = ? ', [$data['receiver_id'], $data['sender_id']])->get();
+        $loggedUser = Auth::user();
+        $blockedUserRepository = new BlockedUserRepository();
+        $is_user_blockedBy_receiver_user = $blockedUserRepository->getUser($loggedUser, $data['receiver_id']);
         if(count($is_user_blockedBy_receiver_user) != 0) {
             throw new BlockedUserException();
         }
     }
 
     public function save($data) {
+        global $messageRepository;
         try {
-            return Message::updateOrCreate(['id' => $data['id']],
-                [
-                    'text' => $data['text'],
-                    'sender_id' => $data['sender_id'],
-                    'receiver_id' => $data['receiver_id'],
-                    'status_for_sender' => $data['status_for_sender'],
-                    'status_for_receiver' => $data['status_for_receiver'],
-                    'isEdited' => $data['isEdited'],
-                    'parent_message_id' => $data['parent_message_id'],
-                    'file_id' => $data['file_id'],
-                ]
-            );
+            return $messageRepository->save($data);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
         }
     }
 
     private function query($data) {
+        global $messageRepository;
         try {
-            return Message::leftJoin('messages as m', 'messages.parent_message_id', '=', 'm.id')
-                ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
-                ->leftJoin('files', 'messages.file_id', '=', 'files.id')
-                ->whereRaw('(messages.sender_id = ? and messages.receiver_id = ?) or (messages.sender_id = ? and messages.receiver_id = ?) order by messages.created_at', [$data['user_id'], $data['messaged_user_id'], $data['messaged_user_id'], $data['user_id']])
-                ->get(['messages.*', 'm.text as parent_message_text', 'users.username as sender_name', 'files.id']);
+            return $messageRepository->getUserMessages($data['user_id'], $data['receiver_id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }
     }
 
-    private function post($url, $data)
+/*    private function post($url, $data)
     {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_POST, true);
@@ -112,5 +107,5 @@ class MessageController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;
-    }
+    }*/
 }
