@@ -24,7 +24,21 @@ class Message extends Model
         'receiver_id',
         'isEdited',
         'parent_message_id',
+        'file_id'
     ];
+
+    /**
+     * Message constructor.
+     * @param $text
+     * @param $sender_id
+     * @param $receiver_id
+     */
+    public function __construct($text, $sender_id, $receiver_id)
+    {
+        $this->text = $text;
+        $this->sender_id = $sender_id;
+        $this->receiver_id = $receiver_id;
+    }
 
     /**
      * @return mixed
@@ -136,6 +150,22 @@ class Message extends Model
     public function setParentMessageId($parent_message_id): void
     {
         $this->parent_message_id = $parent_message_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFileId()
+    {
+        return $this->file_id;
+    }
+
+    /**
+     * @param mixed $file_id
+     */
+    public function setFileId($file_id): void
+    {
+        $this->file_id = $file_id;
     }
 
 

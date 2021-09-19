@@ -34,7 +34,9 @@ class MessageController extends Controller
     public function addMessage($request, $response)
     {
         try {
+            $loggedUser = Auth::user();
             $data = $request->getParsedBody();
+            $data['sender_id'] = $loggedUser['id'];
             $this->validate($data);
             $message = $this->save($data);
 

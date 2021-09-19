@@ -28,7 +28,23 @@ class User extends Model
 		'photo_url',
 	];
 
-	public function setPassword($password)
+    /**
+     * User constructor.
+     * @param $first_name
+     * @param $last_name
+     * @param $username
+     * @param $password
+     */
+/*    public function __construct($first_name, $last_name, $username, $password)
+    {
+        parent::__construct([$first_name, $last_name, $username, $password]);
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+        $this->username = $username;
+        $this->password = $password;
+    }*/
+
+    public function setPassword($password)
 	{
 		$this->update([
 			'password' => password_hash($password, PASSWORD_DEFAULT)
