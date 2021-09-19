@@ -14,11 +14,11 @@ class BlockedUserRepository {
         return BlockedUser::all();
     }
 
-    public function getUserById($id) {
+    public function getBlockedUserById($id) {
         return BlockedUser::whereRaw('id = ?', [$id]);
     }
 
-    public function getUser($logged_user_id, $messaged_user_id) {
+    public function getBlockedUsers($logged_user_id, $messaged_user_id) {
         return BlockedUser::whereRaw('user_id = ? and blocked_user_id = ? ', [$logged_user_id, $messaged_user_id])->get();
     }
 

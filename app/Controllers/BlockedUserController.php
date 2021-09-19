@@ -69,7 +69,7 @@ class BlockedUserController extends Controller
     private function query($data) {
         try {
             $blockedUserRepository = new BlockedUserRepository();
-            return $blockedUserRepository->getUserById($data['id']);
+            return $blockedUserRepository->getBlockedUserById($data['id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

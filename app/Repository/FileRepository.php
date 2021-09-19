@@ -14,7 +14,7 @@ class FileRepository {
         return File::all();
     }
 
-    public function getMessageById($id) {
+    public function getLoginById($id) {
         return File::whereRaw('id = ?', [$id]);
     }
 

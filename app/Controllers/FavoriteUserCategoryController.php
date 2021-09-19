@@ -10,6 +10,7 @@ use App\Repository\FavoriteUserCategoryRepository;
 use Exception;
 
 $favoriteUserCategoryRepository = new FavoriteUserCategoryRepository();
+
 class FavoriteUserCategoryController extends Controller
 {
     public function getFavoriteUserCategoriesByUserId($request, $response)

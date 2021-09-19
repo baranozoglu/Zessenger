@@ -10,6 +10,8 @@ use App\Repository\FileRepository;
 use PHPUnit\Runner\Exception;
 use Psr\Http\Message\UploadedFileInterface;
 
+$fileRepository = new FileRepository();
+
 class FileController extends Controller
 {
     public function getFile($request, $response)
@@ -63,8 +65,8 @@ class FileController extends Controller
     }
 
     private function save($data, $filename) {
+        global $fileRepository;
         try {
-            $fileRepository = new FileRepository();
             return $fileRepository->save($data,$filename);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
@@ -72,8 +74,8 @@ class FileController extends Controller
     }
 
     private function query($data) {
+        global $fileRepository;
         try {
-            $fileRepository = new FileRepository();
             return $fileRepository->getLoginsByUserId($data['id'], $data['user_id'], $data['messaged_user_id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();

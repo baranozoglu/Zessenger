@@ -74,7 +74,7 @@ class MessageController extends Controller
 
         $loggedUser = Auth::user();
         $blockedUserRepository = new BlockedUserRepository();
-        $is_user_blockedBy_receiver_user = $blockedUserRepository->getUser($loggedUser, $data['receiver_id']);
+        $is_user_blockedBy_receiver_user = $blockedUserRepository->getBlockedUsers($loggedUser, $data['receiver_id']);
         if(count($is_user_blockedBy_receiver_user) != 0) {
             throw new BlockedUserException();
         }
