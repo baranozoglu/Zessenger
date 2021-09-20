@@ -18,7 +18,7 @@ $app->group('/auth', function ($group) {
 	$group->post('/signup', AuthController::class . ':postSignUp');
 	$group->get('/signin', AuthController::class . ':getSignIn');
 	$group->post('/signin', AuthController::class . ':postSignIn');
-})->add(new GuestMiddleware($container));
+});
 
 $app->group('/users', function ($group) {
     $group->get('', UserController::class . ':getUsers');

@@ -2,20 +2,19 @@
 namespace App\Controllers;
 
 use App\Auth\Auth;
-use App\Controllers\Auth\AuthController;
 use App\Exception\BlockedUserException;
 use App\Exception\CouldNotFoundUserException;
 use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
-use App\Models\BlockedUser;
-use App\Models\Message;
-use App\Models\User;
 use App\Repository\BlockedUserRepository;
+use App\Repository\FavoriteMessageRepository;
+use App\Repository\FavoriteUserRepository;
+use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
-use App\WebSocket\Chat;
 use Exception;
 
+global $messageRepository;
 $messageRepository = new MessageRepository();
 
 class MessageController extends Controller
@@ -31,7 +30,7 @@ class MessageController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode($ex->getMessage()));
-            return $response;
+            return $response->withStatus($ex->getCode());
         }
     }
 
@@ -66,15 +65,24 @@ class MessageController extends Controller
     }
 
     public function validate($data) {
+        $loggedUser = Auth::user();
+
         $userRepository = new UserRepository();
-        $receiver_user = $userRepository->getUserById([$data['receiver_id']]);
+        $receiver_user = $userRepository->getUserById($data['messaged_user_id']);
         if(count($receiver_user) == 0) {
             throw new CouldNotFoundUserException();
         }
 
-        $loggedUser = Auth::user();
+        $favaroiteUserRepository = new FavoriteUserRepository();
+        $favaroiteUser = $favaroiteUserRepository->getFavoriteUsers($loggedUser['id'], $data['messaged_user_id']);
+
+        if(count($favaroiteUser) == 0) {
+            throw new CouldNotFoundUserException();
+        }
+
         $blockedUserRepository = new BlockedUserRepository();
-        $is_user_blockedBy_receiver_user = $blockedUserRepository->getBlockedUsers($loggedUser, $data['receiver_id']);
+        $is_user_blockedBy_receiver_user = $blockedUserRepository->getBlockedUsers($loggedUser['id'], $data['messaged_user_id']);
+        var_dump(json_encode($is_user_blockedBy_receiver_user));
         if(count($is_user_blockedBy_receiver_user) != 0) {
             throw new BlockedUserException();
         }
@@ -92,7 +100,7 @@ class MessageController extends Controller
     private function query($data) {
         global $messageRepository;
         try {
-            return $messageRepository->getUserMessages($data['user_id'], $data['receiver_id']);
+            return $messageRepository->getUserMessages($data['user_id'], $data['messaged_user_id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

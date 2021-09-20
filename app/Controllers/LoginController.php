@@ -3,11 +3,10 @@ namespace App\Controllers;
 
 use App\Exception\DeleteDatabaseException;
 use App\Exception\InsertDatabaseException;
-use App\Models\Login;
-use App\Models\Message;
 use App\Repository\LoginRepository;
 use Exception;
 
+global $loginRepository;
 $loginRepository = new LoginRepository();
 
 class LoginController extends Controller

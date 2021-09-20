@@ -11,14 +11,14 @@ class UserRepository {
     }
 
     public function getAll() {
-        return User::all();
+        return User::all()->get();
     }
 
     public function getUserById($id) {
-        return User::whereRaw('id = ?', [$id]);
+        return User::whereRaw('id = ?', [$id])->get();
     }
 
     public function destroy($id) {
-        return User::destroy($id);
+        return User::destroy($id)->get();
     }
 }

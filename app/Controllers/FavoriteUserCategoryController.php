@@ -5,10 +5,10 @@ use App\Auth\Auth;
 use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
-use App\Models\FavoriteUserCategory;
 use App\Repository\FavoriteUserCategoryRepository;
 use Exception;
 
+global $favoriteUserCategoryRepository;
 $favoriteUserCategoryRepository = new FavoriteUserCategoryRepository();
 
 class FavoriteUserCategoryController extends Controller

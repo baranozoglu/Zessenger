@@ -25,6 +25,6 @@ class LoginRepository {
     }
 
     public function destroy($id) {
-        return Login::destroy($id);
+        return Login::destroy($id)->get();
     }
 }

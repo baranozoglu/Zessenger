@@ -5,11 +5,11 @@ use App\Auth\Auth;
 use App\Exception\CouldNotUploadFileException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
-use App\Models\File;
 use App\Repository\FileRepository;
 use PHPUnit\Runner\Exception;
 use Psr\Http\Message\UploadedFileInterface;
 
+global $fileRepository;
 $fileRepository = new FileRepository();
 
 class FileController extends Controller
@@ -25,7 +25,7 @@ class FileController extends Controller
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode($ex->getMessage()));
-            return $response;
+            return $response->withStatus($ex->getCode());
         }
     }
 
@@ -76,7 +76,7 @@ class FileController extends Controller
     private function query($data) {
         global $fileRepository;
         try {
-            return $fileRepository->getLoginsByUserId($data['id'], $data['user_id'], $data['messaged_user_id']);
+            return $fileRepository->getFileByUserId($data['id'], $data['user_id'], $data['messaged_user_id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();
         }

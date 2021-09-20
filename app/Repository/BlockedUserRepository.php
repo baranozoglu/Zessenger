@@ -11,15 +11,15 @@ class BlockedUserRepository {
     }
 
     public function getAll() {
-        return BlockedUser::all();
+        return BlockedUser::all()->get();
     }
 
     public function getBlockedUserById($id) {
-        return BlockedUser::whereRaw('id = ?', [$id]);
+        return BlockedUser::whereRaw('id = ?', [$id])->get();
     }
 
     public function getBlockedUsers($logged_user_id, $messaged_user_id) {
-        return BlockedUser::whereRaw('user_id = ? and blocked_user_id = ? ', [$logged_user_id, $messaged_user_id])->get();
+        return BlockedUser::whereRaw('user_id = ? and blocked_user_id = ? ', [$messaged_user_id, $logged_user_id])->get();
     }
 
     public function save($data) {
@@ -32,6 +32,6 @@ class BlockedUserRepository {
     }
 
     public function destroy($id) {
-        return BlockedUser::destroy($id);
+        return BlockedUser::destroy($id)->get();
     }
 }

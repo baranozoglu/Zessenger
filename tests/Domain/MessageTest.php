@@ -22,20 +22,20 @@ class MessageTest extends PHPUnit_TestCase
     /**
      * @dataProvider messageProvider
      * @param $text
-     * @param $sender_id
-     * @param $receiver_id
+     * @param $user_id
+     * @param $messaged_user_id
      */
-    public function testGetters(string $text, int $sender_id,  int $receiver_id)
+    public function testGetters(string $text, int $user_id,  int $messaged_user_id)
     {
         $message = [
             "text" => $text,
-            "sender_id" => $sender_id,
-            "receiver_id" => $receiver_id
+            "user_id" => $user_id,
+            "messaged_user_id" => $messaged_user_id
         ];
 
         $this->assertEquals($text, $message['text']);
-        $this->assertEquals($sender_id, $message['sender_id']);
-        $this->assertEquals($receiver_id, $message['receiver_id']);
+        $this->assertEquals($user_id, $message['user_id']);
+        $this->assertEquals($messaged_user_id, $message['messaged_user_id']);
     }
     
 }

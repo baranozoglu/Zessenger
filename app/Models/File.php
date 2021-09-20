@@ -9,14 +9,14 @@ class File extends Model
 
     private $filename;
 
-    private $sender_id;
+    private $user_id;
 
-    private $receiver_id;
+    private $messaged_user_id;
 
 	protected $fillable = [
 		'filename',
-		'sender_id',
-		'receiver_id',
+		'user_id',
+		'messaged_user_id',
 	];
 
     /**
@@ -38,33 +38,35 @@ class File extends Model
     /**
      * @return mixed
      */
-    public function getReceiverId()
+    public function getUserId()
     {
-        return $this->receiver_id;
+        return $this->user_id;
     }
 
     /**
-     * @param mixed $receiver_id
+     * @param mixed $user_id
      */
-    public function setReceiverId($receiver_id): void
+    public function setUserId($user_id): void
     {
-        $this->receiver_id = $receiver_id;
+        $this->user_id = $user_id;
     }
 
     /**
      * @return mixed
      */
-    public function getSenderId()
+    public function getMessagedUserId()
     {
-        return $this->sender_id;
+        return $this->messaged_user_id;
     }
 
     /**
-     * @param mixed $sender_id
+     * @param mixed $messaged_user_id
      */
-    public function setSenderId($sender_id): void
+    public function setMessagedUserId($messaged_user_id): void
     {
-        $this->sender_id = $sender_id;
+        $this->messaged_user_id = $messaged_user_id;
     }
+
+
 
 }

@@ -11,17 +11,17 @@ class FavoriteMessageRepository {
     }
 
     public function getAll() {
-        return FavoriteMessage::all();
+        return FavoriteMessage::all()->get();
     }
 
     public function getFavoriteMessageById($id) {
-        return FavoriteMessage::whereRaw('id = ?', [$id]);
+        return FavoriteMessage::whereRaw('id = ?', [$id])->get();
     }
 
     public function getFavoriteMessages($logged_user_id) {
-        return FavoriteMessage::leftJoin('users', 'favorite_messages.sender_id', '=', 'users.id')
+        return FavoriteMessage::leftJoin('users', 'favorite_messages.user_id', '=', 'users.id')
             ->whereRaw('user_id = ? order by created_at', [$logged_user_id])
-            ->get(['favorite_messages.*','users.username as sender_name']);
+            ->get(['favorite_messages.*','users.username as sender_name'])->get();
     }
 
     public function save($data) {
@@ -29,13 +29,13 @@ class FavoriteMessageRepository {
             [
                 'message_id' => $data['message_id'],
                 'user_id' => $data['user_id'],
-                'sender_id' => $data['sender_id'],
-                'receiver_id' => $data['receiver_id'],
+                'owner_id' => $data['owner_id'],
+                'messaged_user_id' => $data['messaged_user_id'],
             ]
         );
     }
 
     public function destroy($id) {
-        return FavoriteMessage::destroy($id);
+        return FavoriteMessage::destroy($id)->get();
     }
 }

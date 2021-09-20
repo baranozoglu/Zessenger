@@ -6,9 +6,11 @@ use App\Exception\CouldNotFoundUserException;
 use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
-use App\Models\BlockedUser;
 use App\Repository\BlockedUserRepository;
 use Exception;
+
+global $blockedUserRepository;
+$blockedUserRepository = new BlockedUserRepository();
 
 class BlockedUserController extends Controller
 {
@@ -42,8 +44,9 @@ class BlockedUserController extends Controller
     }
 
     public function delete($request, $response, $args) {
+        global $blockedUserRepository;
         try {
-            BlockedUser::destroy($args['id']);
+            $blockedUserRepository->destroy($args['id']);
             return $response;
         } catch (Exception $ex) {
             throw new DeleteDatabaseException();
@@ -52,14 +55,14 @@ class BlockedUserController extends Controller
 
     private function validate($data) {
         $user = $this->getBlockedUserByUserId($data['blocked_user_id']);
-        if(count($user) == 0) {
+        if($user == null) {
             throw new CouldNotFoundUserException();
         }
     }
 
     private function save($data) {
+        global $blockedUserRepository;
         try {
-            $blockedUserRepository = new BlockedUserRepository();
             return $blockedUserRepository->save($data);
         } catch (Exception $ex) {
             throw new InsertDatabaseException();
@@ -67,8 +70,8 @@ class BlockedUserController extends Controller
     }
 
     private function query($data) {
+        global $blockedUserRepository;
         try {
-            $blockedUserRepository = new BlockedUserRepository();
             return $blockedUserRepository->getBlockedUserById($data['id']);
         } catch (Exception $ex) {
             throw new GetDatabaseException();

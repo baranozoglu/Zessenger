@@ -11,16 +11,16 @@ class FavoriteUserRepository {
     }
 
     public function getAll() {
-        return FavoriteUser::all();
+        return FavoriteUser::all()->get();
     }
 
     public function getFavoriteUserById($id) {
-        return FavoriteUser::whereRaw('id = ?', [$id]);
+        return FavoriteUser::whereRaw('id = ?', [$id])->get();
     }
 
-    public function getFavoriteUsers($logged_user_id) {
-        return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.user_id')
-            ->whereRaw('favorite_users.user_id = ?', [$logged_user_id])
+    public function getFavoriteUsers($user_id, $messaged_user_id) {
+        return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.favorite_user_category_id')
+            ->whereRaw('favorite_users.favorite_user_id = ? and favorite_users.user_id = ?', [$messaged_user_id, $user_id])
             ->get(['favorite_users.*', 'favorite_user_categories.name']);
     }
 
@@ -50,6 +50,6 @@ class FavoriteUserRepository {
     }
 
     public function destroy($id) {
-        return FavoriteUser::destroy($id);
+        return FavoriteUser::destroy($id)->get();
     }
 }

@@ -5,16 +5,18 @@ use App\Auth\Auth;
 use App\Exception\CouldNotFoundUserException;
 use App\Exception\DeleteDatabaseException;
 use App\Exception\PermissionDeniedException;
-use App\Models\User;
 use Exception;
 use App\Repository\UserRepository;
+
+global $userRepository;
+$userRepository = new UserRepository();
 
 class UserController extends Controller
 {
     public function getUsers($request, $response)
     {
+        global $userRepository;
         try {
-            $userRepository = new UserRepository();
             $users = $userRepository->getAll();
             $response->getBody()->write(json_encode($users));
             return $response;
@@ -25,8 +27,8 @@ class UserController extends Controller
     }
 
     public function delete($request, $response, $args) {
+        global $userRepository;
         try {
-            $userRepository = new UserRepository();
             $permission = $this->permission($args['id'], $userRepository);
 
             if($permission) {

@@ -11,11 +11,11 @@ class FavoriteUserCategoryRepository {
     }
 
     public function getAll() {
-        return FavoriteUserCategory::all();
+        return FavoriteUserCategory::all()->get();
     }
 
     public function getFavoriteUserCategoryById($id) {
-        return FavoriteUserCategory::whereRaw('id = ?', [$id]);
+        return FavoriteUserCategory::whereRaw('id = ?', [$id])->get();
     }
 
     public function getFavoriteUserCategories($logged_user_id) {
@@ -31,6 +31,6 @@ class FavoriteUserCategoryRepository {
     }
 
     public function destroy($id) {
-        return FavoriteUser::destroy($id);
+        return FavoriteUser::destroy($id)->get();
     }
 }

@@ -10,8 +10,8 @@ class Message extends Model
     private $text;
     private $status_for_sender;
     private $status_for_receiver;
-    private $sender_id;
-    private $receiver_id;
+    private $user_id;
+    private $messaged_user_id;
     private $isEdited;
     private $parent_message_id;
     private $file_id;
@@ -20,8 +20,8 @@ class Message extends Model
         'text',
         'status_for_sender',
         'status_for_receiver',
-        'sender_id',
-        'receiver_id',
+        'user_id',
+        'messaged_user_id',
         'isEdited',
         'parent_message_id',
         'file_id'
@@ -78,33 +78,33 @@ class Message extends Model
     /**
      * @return mixed
      */
-    public function getSenderId()
+    public function getUserId()
     {
-        return $this->sender_id;
+        return $this->user_id;
     }
 
     /**
-     * @param mixed $sender_id
+     * @param mixed $user_id
      */
-    public function setSenderId($sender_id): void
+    public function setUserId($user_id): void
     {
-        $this->sender_id = $sender_id;
+        $this->user_id = $user_id;
     }
 
     /**
      * @return mixed
      */
-    public function getReceiverId()
+    public function getMessagedUserId()
     {
-        return $this->receiver_id;
+        return $this->messaged_user_id;
     }
 
     /**
-     * @param mixed $receiver_id
+     * @param mixed $messaged_user_id
      */
-    public function setReceiverId($receiver_id): void
+    public function setMessagedUserId($messaged_user_id): void
     {
-        $this->receiver_id = $receiver_id;
+        $this->messaged_user_id = $messaged_user_id;
     }
 
     /**
@@ -154,6 +154,5 @@ class Message extends Model
     {
         $this->file_id = $file_id;
     }
-
 
 }

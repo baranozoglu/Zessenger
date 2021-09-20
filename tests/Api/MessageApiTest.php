@@ -33,15 +33,15 @@ class MessageApiTest extends PHPUnit_TestCase
     /**
      * @dataProvider userProvider
      * @param string $text
-     * @param string $sender_id
-     * @param string $receiver_id
+     * @param string $user_id
+     * @param string $message_user_id
      */
-    public function testFindAll(string $text, int $sender_id, int $receiver_id)
+    public function testFindAll(string $text, int $user_id, int $message_user_id)
     {
         $message = [
             "text" => $text,
-            "sender_id" => $sender_id,
-            "receiver_id" => $receiver_id
+            "user_id" => $user_id,
+            "message_user_id" => $message_user_id
         ];
         $this->createMock(UserRepository::class)
             ->method('getAll')->willReturn($message);

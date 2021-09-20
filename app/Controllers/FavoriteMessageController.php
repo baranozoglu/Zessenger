@@ -7,13 +7,13 @@ use App\Exception\DeleteDatabaseException;
 use App\Exception\FavoriteMessageException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
-use App\Models\FavoriteMessage;
-use App\Models\Message;
 use App\Repository\FavoriteMessageRepository;
 use App\Repository\MessageRepository;
 use Exception;
 
+global $favoriteMessageRepository;
 $favoriteMessageRepository = new FavoriteMessageRepository();
+
 class FavoriteMessageController extends Controller
 {
     public function getFavoriteMessagesBySenderAndReceiver($request, $response)
@@ -58,7 +58,7 @@ class FavoriteMessageController extends Controller
     private function validate($data) {
         $messageRepository = new MessageRepository();
         $message = $messageRepository->getMessageById($data['message_id']);
-        if(count($message) == 0) {
+        if($message == null) {
             throw new CouldNotFoundMessageException();
         }
     }

@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS favorite_users;
 DROP TABLE IF EXISTS favorite_messages;
 DROP TABLE IF EXISTS favorite_user_categories;
 DROP TABLE IF EXISTS logins;
+DROP TABLE IF EXISTS files;
 
 CREATE TABLE users (
                        id INTEGER PRIMARY KEY,

@@ -8,12 +8,12 @@ use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Exception\UpdateDatabaseException;
-use App\Models\FavoriteUserCategory;
 use App\Repository\FavoriteUserCategoryRepository;
 use App\Repository\FavoriteUserRepository;
 use App\Repository\UserRepository;
 use Exception;
 
+global $favoriteUserRepository;
 $favoriteUserRepository = new FavoriteUserRepository();
 
 class FavoriteUserController extends Controller
@@ -60,12 +60,12 @@ class FavoriteUserController extends Controller
     private function validate($data) {
         $userRepository = new UserRepository();
         $user = $userRepository->getUserById($data['favorite_user_id']);
-        if(count($user) == 0) {
+        if($user == null) {
             throw new CouldNotFoundUserException();
         }
         $favoriteUserCategoryRepository = new FavoriteUserCategoryRepository();
         $favorite_user_category = $favoriteUserCategoryRepository->getFavoriteUserCategoryById($data['favorite_user_category_id']);
-        if(count($favorite_user_category) == 0) {
+        if($favorite_user_category == null) {
             throw new CouldNotFoundUserException();
         }
     }
