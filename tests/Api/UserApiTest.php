@@ -66,7 +66,7 @@ class UserApiTest extends PHPUnit_TestCase
         $request = $this->createRequest('DELETE','/users/9999');
         $response = $this->app->handle($request);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(500, $response->getStatusCode());
 
     }
 

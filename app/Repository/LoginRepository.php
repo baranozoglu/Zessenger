@@ -20,7 +20,8 @@ class LoginRepository {
 
     public function save($data) {
         return Login::create([
-            'user_id' => $data,
+            'user_id' => $data['user_id'],
+            'connection_id' => $data['connection_id'],
         ]);
     }
 

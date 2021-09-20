@@ -18,6 +18,9 @@ $container = new Container();
 AppFactory::setContainer($container);
 
 $app = AppFactory::create();
+$app->add(\App\Middleware\CorsMiddleware::class);
+$app->addRoutingMiddleware();
+
 $responseFactory = $app->getResponseFactory();
 
 $routeCollector = $app->getRouteCollector();
@@ -34,6 +37,7 @@ $container->set('settings', function () {
 });
 
 require_once __DIR__ . '/database.php';
+
 
 $container->set('router', function () use ($routeParser) {
     return $routeParser;

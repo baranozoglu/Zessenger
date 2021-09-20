@@ -47,6 +47,7 @@ class MessageController extends Controller
             FavoriteUserController::updateLastMessageTime($id_list);
 
             $response->getBody()->write(json_encode($message));
+
             return $response;
         } catch (Exception $ex) {
             $response->getBody()->write(json_encode($ex->getMessage()));

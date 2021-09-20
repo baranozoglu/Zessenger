@@ -9,8 +9,11 @@ class Login extends Model
 
     private $user_id;
 
-	protected $fillable = [
+    private $connection_id;
+
+    protected $fillable = [
 		'user_id',
+		'connection_id',
 	];
 
     /**
@@ -27,6 +30,22 @@ class Login extends Model
     public function setUserId($user_id): void
     {
         $this->user_id = $user_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConnectionId()
+    {
+        return $this->connection_id;
+    }
+
+    /**
+     * @param mixed $connection_id
+     */
+    public function setConnectionId($connection_id): void
+    {
+        $this->connection_id = $connection_id;
     }
 
 }

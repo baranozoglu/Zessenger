@@ -1,9 +1,12 @@
 <?php
 namespace App\Controllers\Auth;
 
-use App\Models\Login;
 use App\Models\User;
 use App\Controllers\Controller;
+use App\Repository\LoginRepository;
+
+global $loginRepository;
+$loginRepository = new LoginRepository();
 
 class AuthController extends Controller
 {
@@ -21,20 +24,22 @@ class AuthController extends Controller
 
 	public function postSignIn($request, $response)
 	{
+	    global $loginRepository;
+
 		$data = $request->getParsedBody();
 		$auth = $this->auth->attempt(
 			$data['username'],
-			$data['password']
+			$data['password'],
+            $data['connection_id']
 		);
         $user = $this->auth->user();
 		if (! $auth) {
             $response->getBody()->write(json_encode("faaiiilll"));
             return $response;
 		}
+        $data['user_id'] = $user['id'];
 
-        Login::create([
-            'user_id' => $user['id'],
-        ]);
+		$loginRepository->save($data);
 
 		return $response;
 	}
