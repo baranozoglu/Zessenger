@@ -11,7 +11,8 @@ class UserRepository {
     }
 
     public function getAll() {
-        return User::all();
+        return User::leftJoin('logins', 'logins.user_id', '=', 'users.id')
+            ->get(['users.*', 'logins.connection_id']);
     }
 
     public function getUserById($id) {

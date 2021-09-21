@@ -2,6 +2,10 @@
 
 use DI\Container;
 use Slim\Factory\AppFactory;
+use Ratchet\Server\IoServer;
+use Ratchet\Http\HttpServer;
+use Ratchet\WebSocket\WsServer;
+use App\WebSocket\Chat;
 
 session_start();
 header('Access-Control-Allow-Origin: *');
@@ -17,6 +21,11 @@ try {
 $container = new Container();
 // Set container to create App with on AppFactory
 AppFactory::setContainer($container);
+
+$chat = new Chat();
+$container->set('chat', function () use ($chat) {
+    return $chat;
+});
 
 $app = AppFactory::create();
 $app->add(\App\Middleware\CorsMiddleware::class);
@@ -53,5 +62,6 @@ $container->set('auth', function() {
 });
 
 $app->addBodyParsingMiddleware();
+
 
 require __DIR__ . '/../app/routes.php';

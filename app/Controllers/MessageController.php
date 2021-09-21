@@ -83,7 +83,6 @@ class MessageController extends Controller
 
         $blockedUserRepository = new BlockedUserRepository();
         $is_user_blockedBy_receiver_user = $blockedUserRepository->getBlockedUsers($loggedUser['id'], $data['messaged_user_id']);
-        var_dump(json_encode($is_user_blockedBy_receiver_user));
         if(count($is_user_blockedBy_receiver_user) != 0) {
             throw new BlockedUserException();
         }
@@ -107,14 +106,4 @@ class MessageController extends Controller
         }
     }
 
-/*    private function post($url, $data)
-    {
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return $response;
-    }*/
 }

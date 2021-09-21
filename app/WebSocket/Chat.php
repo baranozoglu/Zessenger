@@ -2,40 +2,53 @@
 
 namespace App\WebSocket;
 
+use App\Repository\LoginRepository;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
+
 class Chat implements MessageComponentInterface {
     protected $clients;
+    private $users;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
+        $this->users = array();
     }
 
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
         echo "New connection! ({$conn->resourceId})\n";
+        $this->users[$conn->resourceId] = $conn;
 
     }
 
+    public function onChatMessage($msg) {
+        $data = json_decode($msg);
+
+        $loginRepository = new LoginRepository();
+        $login = $loginRepository->getLoginsByUserId($data->messaged_user_id);
+        $this->users[$login['connection_id']]->send($msg);
+    }
+
     public function onMessage(ConnectionInterface $from, $msg) {
-        $numRecv = count($this->clients) - 1;
+        //$numRecv = count($this->clients) - 1;
         if ($msg==="whoami") {
             $from->send($from->resourceId);
+            return;
         }
 
-        echo "from->>>".json_encode($msg);
+       /* echo "from->>>".json_encode($msg);
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
         echo "clients->>>".json_encode($this->clients);
-
-        foreach ($this->clients as $client) {
-            if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send($msg);
-            }
+*/
+        $data = json_decode($msg);
+        if($this->users[$data->messaged_user_id]) {
+            $this->users[$data->messaged_user_id]->send($msg);
         }
+
     }
 
     public function onClose(ConnectionInterface $conn) {

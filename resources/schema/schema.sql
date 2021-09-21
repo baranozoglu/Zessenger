@@ -55,7 +55,7 @@ CREATE TABLE blocked_users (
 CREATE TABLE logins (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER NOT NULL,
-                        connection_id INTEGER NOT NULL,
+                        connection_id INTEGER,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         updated_at DATETIME,
                         FOREIGN KEY (user_id)

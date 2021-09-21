@@ -37,6 +37,7 @@ class AuthController extends Controller
             $user = $this->auth->user();
             $data['user_id'] = $user['id'];
 
+            $loginRepository->setNullConnectionsBeforeSave($data);
             $loginRepository->save($data);
 
             $response->getBody()->write(json_encode($user['id']));

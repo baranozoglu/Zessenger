@@ -91,7 +91,8 @@ class FavoriteUserController extends Controller
     public function updateLastMessageTime($id_list) {
         global $favoriteUserRepository;
         try {
-            return $favoriteUserRepository->updateLastMessageTime($id_list);
+            var_dump("id->>>".json_encode($id_list));
+            return $favoriteUserRepository->updateLastMessageTime(json_encode($id_list));
         } catch (Exception $ex) {
             throw new UpdateDatabaseException();
         }
