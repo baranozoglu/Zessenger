@@ -11,7 +11,7 @@ class UserRepository {
     }
 
     public function getAll() {
-        return User::all()->get();
+        return User::all();
     }
 
     public function getUserById($id) {

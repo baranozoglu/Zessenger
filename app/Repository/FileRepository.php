@@ -11,7 +11,7 @@ class FileRepository {
     }
 
     public function getAll() {
-        return File::all()->get();
+        return File::all();
     }
 
     public function getLoginById($id) {

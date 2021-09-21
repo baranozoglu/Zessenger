@@ -4,6 +4,7 @@ use DI\Container;
 use Slim\Factory\AppFactory;
 
 session_start();
+header('Access-Control-Allow-Origin: *');
 
 require __DIR__ . '/../vendor/autoload.php';
 

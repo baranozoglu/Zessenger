@@ -25,17 +25,14 @@ final class CorsMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $routeContext = RouteContext::fromRequest($request);
-        $routingResults = $routeContext->getRoutingResults();
-        $methods = $routingResults->getAllowedMethods();
         $requestHeaders = $request->getHeaderLine('Access-Control-Request-Headers');
 
         $response = $handler->handle($request);
 
         $response = $response
             ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Methods', implode(', ', $methods))
-            ->withHeader('Access-Control-Allow-Headers', $requestHeaders ?: '*');
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', '*');
 
 
         // Optional: Allow Ajax CORS requests with Authorization header

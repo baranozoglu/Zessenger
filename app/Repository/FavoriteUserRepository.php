@@ -11,7 +11,7 @@ class FavoriteUserRepository {
     }
 
     public function getAll() {
-        return FavoriteUser::all()->get();
+        return FavoriteUser::all();
     }
 
     public function getFavoriteUserById($id) {

@@ -11,7 +11,7 @@ class FavoriteMessageRepository {
     }
 
     public function getAll() {
-        return FavoriteMessage::all()->get();
+        return FavoriteMessage::all();
     }
 
     public function getFavoriteMessageById($id) {

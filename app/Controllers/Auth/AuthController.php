@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers\Auth;
 
+use App\Exception\AuthException;
 use App\Models\User;
 use App\Controllers\Controller;
 use App\Repository\LoginRepository;
@@ -24,25 +25,33 @@ class AuthController extends Controller
 
 	public function postSignIn($request, $response)
 	{
-	    global $loginRepository;
+        global $loginRepository;
+        try {
+            $data = $request->getParsedBody();
+            $auth = $this->auth->attempt(
+                $data['username'],
+                $data['password'],
+                $data['connection_id']
+            );
+            $this->checkAuth($auth);
+            $user = $this->auth->user();
+            $data['user_id'] = $user['id'];
 
-		$data = $request->getParsedBody();
-		$auth = $this->auth->attempt(
-			$data['username'],
-			$data['password'],
-            $data['connection_id']
-		);
-        $user = $this->auth->user();
-		if (! $auth) {
-            $response->getBody()->write(json_encode("faaiiilll"));
+            $loginRepository->save($data);
+
+            $response->getBody()->write(json_encode($user['id']));
             return $response;
-		}
-        $data['user_id'] = $user['id'];
-
-		$loginRepository->save($data);
-
-		return $response;
+        } catch (AuthException $ex) {
+            $response->getBody()->write(json_encode($ex->getMessage()));
+            return $response->withStatus($ex->getCode());
+        }
 	}
+
+	private function checkAuth($auth) {
+        if (!$auth) {
+            throw new AuthException();
+        }
+    }
 
 	public function getSignUp($request, $response)
 	{

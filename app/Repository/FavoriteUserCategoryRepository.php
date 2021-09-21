@@ -11,7 +11,7 @@ class FavoriteUserCategoryRepository {
     }
 
     public function getAll() {
-        return FavoriteUserCategory::all()->get();
+        return FavoriteUserCategory::all();
     }
 
     public function getFavoriteUserCategoryById($id) {

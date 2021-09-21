@@ -11,8 +11,6 @@ use App\Controllers\LoginController;
 use App\Controllers\MessageController;
 use App\Controllers\FileController;
 use App\Middleware\AuthMiddleware;
-use App\Middleware\CorsMiddleware;
-use App\Middleware\GuestMiddleware;
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;

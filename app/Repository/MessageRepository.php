@@ -11,7 +11,7 @@ class MessageRepository {
     }
 
     public function getAll() {
-        return Message::all()->get();
+        return Message::all();
     }
 
     public function getMessageById($id) {

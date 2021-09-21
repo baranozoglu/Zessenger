@@ -11,7 +11,7 @@ class BlockedUserRepository {
     }
 
     public function getAll() {
-        return BlockedUser::all()->get();
+        return BlockedUser::all();
     }
 
     public function getBlockedUserById($id) {
