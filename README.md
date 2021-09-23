@@ -176,7 +176,6 @@ reference slim official documents - [Slim Framework](http://www.slimframework.co
 
 ## Look Feel
 
-![slimborn look feel](slimborn.png)
 
 ## Directory Structure
 
@@ -208,4 +207,3 @@ Feel free to submit any minor enhancements, the goal here is to keep this as sim
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

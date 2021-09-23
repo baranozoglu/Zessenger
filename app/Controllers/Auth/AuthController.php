@@ -1,76 +1,79 @@
 <?php
-
 namespace App\Controllers\Auth;
 
+use App\Exception\AuthException;
 use App\Models\User;
 use App\Controllers\Controller;
-use Respect\Validation\Validator as v;
+use App\Repository\LoginRepository;
 
-/**
- * AuthController
- *
- * @author    Haven Shen <havenshen@gmail.com>
- * @copyright    Copyright (c) Haven Shen
- */
+global $loginRepository;
+$loginRepository = new LoginRepository();
+
 class AuthController extends Controller
 {
+
 	public function getSignOut($request, $response)
 	{
 		$this->auth->logout();
-		return $response->withHeader('Location', $this->router->urlFor('home'));
+		return $response;
 	}
 
 	public function getSignIn($request, $response)
 	{
-		return $this->view->render($response, 'auth/signin.twig');
+		return $response;
 	}
 
 	public function postSignIn($request, $response)
 	{
-		$data = $request->getParsedBody();
-		$auth = $this->auth->attempt(
-			$data['email'],
-			$data['password']
-		);
+        global $loginRepository;
+        try {
+            $data = $request->getParsedBody();
+            $auth = $this->auth->attempt(
+                $data['username'],
+                $data['password'],
+                $data['connection_id']
+            );
+            $this->checkAuth($auth);
+            $user = $this->auth->user();
+            $data['user_id'] = $user['id'];
 
-		if (! $auth) {
-			$this->flash->addMessage('error', 'Could not sign you in with those details');
-			return $response->withHeader('Location', $this->router->urlFor('auth.signin'));
-		}
+            $loginRepository->setNullConnectionsBeforeSave($data);
+            $loginRepository->save($data);
 
-		return $response->withHeader('Location', $this->router->urlFor('home'));
+            $response->getBody()->write(json_encode($user['id']));
+            return $response;
+        } catch (AuthException $ex) {
+            $response->getBody()->write(json_encode($ex->getMessage()));
+            return $response->withStatus($ex->getCode());
+        }
 	}
+
+	private function checkAuth($auth) {
+        if (!$auth) {
+            throw new AuthException();
+        }
+    }
 
 	public function getSignUp($request, $response)
 	{
-		return $this->view->render($response, 'auth/signup.twig');
+		return $response;
 	}
 
 	public function postSignUp($request, $response)
 	{
-
-		$validation = $this->validator->validate($request, [
-			'email' => v::noWhitespace()->notEmpty()->email()->emailAvailable(),
-			'name' => v::noWhitespace()->notEmpty()->alpha(),
-			'password' => v::noWhitespace()->notEmpty(),
-		]);
-
-		if ($validation->failed()) {
-			return $response->withHeader('Location', $this->router->urlFor('auth.signup'));
-		}
-
 		$data = $request->getParsedBody();
 
 		$user = User::create([
 			'email' => $data['email'],
-			'name' => $data['name'],
+			'first_name' => $data['first_name'],
+			'last_name' => $data['last_name'],
 			'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'phone' => $data['phone'],
+            'photo_url' => $data['photo_url'],
+            'username' => $data['username'],
 		]);
 
-		$this->flash->addMessage('info', 'You have been signed up');
-
-		$this->auth->attempt($user->email, $data['password']);
-
-		return $response->withHeader('Location', $this->router->urlFor('home'));
+        $response->getBody()->write(json_encode($user));
+        return $response;
 	}
 }
