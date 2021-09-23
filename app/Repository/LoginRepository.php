@@ -18,11 +18,16 @@ class LoginRepository {
         return Login::whereRaw('user_id = ? order by id desc limit 1', [$id])->get();
     }
 
+    public function getLoginsByToken($token) {
+        return Login::whereRaw('token = ? order by id desc limit 1', [$token])->get()->first();
+    }
+
     public function save($data) {
-        return Login::updateOrCreate([
-            'user_id' => $data['user_id']],
-            ['connection_id' => $data['connection_id'],
-        ]);
+        return Login::updateOrCreate(['user_id' => $data['user_id']],
+            [
+                'connection_id' => $data['connection_id'],
+                'token' => $data['token']
+            ]);
     }
 
     public function setNullConnectionsBeforeSave($data) {

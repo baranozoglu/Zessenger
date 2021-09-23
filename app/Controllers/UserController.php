@@ -44,7 +44,7 @@ class UserController extends Controller
 
     public function permission($id, $userRepository) {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             if($userRepository->getUserById($id) == null) {
                 throw new Exception();
             }

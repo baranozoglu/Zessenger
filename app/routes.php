@@ -29,7 +29,7 @@ $app->group('/users', function ($group) {
 });
 
 $app->group('/messages', function ($group) {
-    $group->get('', MessageController::class . ':getMessagesBySenderAndReceiver');
+    $group->get('', MessageController::class . ':getMessages');
     $group->post('', MessageController::class . ':addMessage');
     $group->put('', MessageController::class . ':addMessage');
     $group->delete('/{id}', MessageController::class . ':delete');

@@ -11,9 +11,12 @@ class Login extends Model
 
     private $connection_id;
 
+    private $token;
+
     protected $fillable = [
 		'user_id',
 		'connection_id',
+        'token',
 	];
 
     /**
@@ -46,6 +49,22 @@ class Login extends Model
     public function setConnectionId($connection_id): void
     {
         $this->connection_id = $connection_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token): void
+    {
+        $this->token = $token;
     }
 
 }

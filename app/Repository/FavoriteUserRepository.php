@@ -20,7 +20,7 @@ class FavoriteUserRepository {
 
     public function getFavoriteUsers($user_id, $messaged_user_id) {
         return FavoriteUser::join('favorite_user_categories', 'favorite_user_categories.id', '=', 'favorite_users.favorite_user_category_id')
-            ->leftJoin('logins', 'logins.user_id', '=', 'user_id')
+            ->leftJoin('logins', 'logins.user_id', '=', 'favorite_users.user_id')
             ->whereRaw('favorite_users.favorite_user_id = ? and favorite_users.user_id = ?', [$messaged_user_id, $user_id])
             ->get(['favorite_users.*', 'favorite_user_categories.name', 'logins.connection_id']);
     }

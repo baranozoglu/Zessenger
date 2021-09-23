@@ -19,7 +19,7 @@ class FavoriteMessageController extends Controller
     public function getFavoriteMessagesBySenderAndReceiver($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $favorite_messages = $this->query($loggedUser);
             $response->getBody()->write(json_encode($favorite_messages));
             return $response;
@@ -32,7 +32,7 @@ class FavoriteMessageController extends Controller
     public function addFavoriteMessage($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $data = $request->getParsedBody();
             $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
