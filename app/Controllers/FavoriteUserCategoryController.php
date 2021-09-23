@@ -16,7 +16,7 @@ class FavoriteUserCategoryController extends Controller
     public function getFavoriteUserCategoriesByUserId($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $blacklist = $this->query($loggedUser);
             $response->getBody()->write(json_encode($blacklist));
             return $response;
@@ -29,7 +29,7 @@ class FavoriteUserCategoryController extends Controller
     public function addFavoriteUserCategory($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $data = $request->getParsedBody();
             $data['user_id'] = $loggedUser['id'];
             $favorite_user_category = $this->save($data);

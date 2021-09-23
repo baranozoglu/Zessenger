@@ -17,7 +17,7 @@ class BlockedUserController extends Controller
     public function getBlockedUserByUserId($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $blacklist = $this->query($loggedUser);
             $response->getBody()->write(json_encode($blacklist));
             return $response;
@@ -30,7 +30,7 @@ class BlockedUserController extends Controller
     public function addBlockedUser($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $data = $request->getParsedBody();
             $data['user_id'] = $loggedUser['id'];
             $this->validate($data);

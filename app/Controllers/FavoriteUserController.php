@@ -21,7 +21,7 @@ class FavoriteUserController extends Controller
     public function getFavoriteUsersByUserId($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $favorite_users = $this->query($loggedUser);
             $response->getBody()->write(json_encode($favorite_users));
             return $response;
@@ -34,7 +34,7 @@ class FavoriteUserController extends Controller
     public function addFavoriteUser($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $data = $request->getParsedBody();
             $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
@@ -91,7 +91,6 @@ class FavoriteUserController extends Controller
     public function updateLastMessageTime($id_list) {
         global $favoriteUserRepository;
         try {
-            var_dump("id->>>".json_encode($id_list));
             return $favoriteUserRepository->updateLastMessageTime(json_encode($id_list));
         } catch (Exception $ex) {
             throw new UpdateDatabaseException();

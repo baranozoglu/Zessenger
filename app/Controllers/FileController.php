@@ -17,7 +17,7 @@ class FileController extends Controller
     public function getFile($request, $response)
     {
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $data = $request->getQueryParams();
             $data['user_id'] = $loggedUser['id'];
             $file = $this->query($data);

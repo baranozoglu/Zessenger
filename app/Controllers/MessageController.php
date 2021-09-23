@@ -1,14 +1,12 @@
 <?php
 namespace App\Controllers;
 
-use App\Auth\Auth;
 use App\Exception\BlockedUserException;
 use App\Exception\CouldNotFoundUserException;
 use App\Exception\DeleteDatabaseException;
 use App\Exception\GetDatabaseException;
 use App\Exception\InsertDatabaseException;
 use App\Repository\BlockedUserRepository;
-use App\Repository\FavoriteMessageRepository;
 use App\Repository\FavoriteUserRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
@@ -19,13 +17,16 @@ $messageRepository = new MessageRepository();
 
 class MessageController extends Controller
 {
-    public function getMessagesBySenderAndReceiver($request, $response)
+    public function getMessages($request, $response)
     {
+        $response->getBody()->write(json_encode($request));
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $request->login;
+            var_dump("loggedUser->>".json_encode($loggedUser));
             $data = $request->getQueryParams();
-            $data['user_id'] = $loggedUser['id'];
+            $data['user_id'] = $loggedUser['user_id'];
             $messages = $this->query($data);
+            var_dump("messages->>".json_encode($messages));
             $response->getBody()->write(json_encode($messages));
             return $response;
         } catch (Exception $ex) {
@@ -36,8 +37,10 @@ class MessageController extends Controller
 
     public function addMessage($request, $response)
     {
+        $response->getBody()->write(json_encode($request));
+        return $response;
         try {
-            $loggedUser = Auth::user();
+            $loggedUser = $this->authUser;
             $data = $request->getParsedBody();
             $data['user_id'] = $loggedUser['id'];
             $this->validate($data);
@@ -66,7 +69,8 @@ class MessageController extends Controller
     }
 
     public function validate($data) {
-        $loggedUser = Auth::user();
+
+        $loggedUser = $this->authUser;
 
         $userRepository = new UserRepository();
         $receiver_user = $userRepository->getUserById($data['messaged_user_id']);
@@ -86,6 +90,7 @@ class MessageController extends Controller
         if(count($is_user_blockedBy_receiver_user) != 0) {
             throw new BlockedUserException();
         }
+
     }
 
     public function save($data) {
